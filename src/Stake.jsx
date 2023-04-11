@@ -247,7 +247,11 @@ return (
         <NEARInput
           value={state.inputValue}
           onChange={(e) => {
-            const stakeAmount = e.target.value;
+            const targetValue = e.target.value;
+            if (targetValue !== "" && !targetValue.match(/^\d*(\.\d*)?$/)) {
+              return;
+            }
+            const stakeAmount = targetValue.replace(/^0+/, "0"); // remove prefix 0
             if (
               nearBalance &&
               (isNaN(Number(stakeAmount)) ||
@@ -287,7 +291,24 @@ return (
             });
           }}
           onClickMax={() => {
-            State.update({ ...state, inputValue: nearBalance, inputError: "" });
+            if (
+              isNaN(Number(nearBalance)) ||
+              nearBalance === "" ||
+              Big(nearBalance).lt(1)
+            ) {
+              State.update({
+                ...state,
+                inputValue: nearBalance,
+                inputError: "Stake at least 1 NEAR",
+              });
+              return;
+            } else {
+              State.update({
+                ...state,
+                inputValue: nearBalance,
+                inputError: "",
+              });
+            }
           }}
         />
         <HorizentalLine />
