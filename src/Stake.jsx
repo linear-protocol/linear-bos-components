@@ -1,7 +1,8 @@
-State.init({
+const INITIAL_VALUE = {
   inputValue: "",
   inputError: "",
-});
+};
+State.init(INITIAL_VALUE);
 
 const accountId = props.accountId || context.accountId;
 const isSignedIn = !!accountId;
@@ -358,6 +359,7 @@ return (
               .mul(new Big(10).pow(NEAR_DECIMALS))
               .toFixed(0)
           );
+          State.update(INITIAL_VALUE);
         }}
       >
         Stake
