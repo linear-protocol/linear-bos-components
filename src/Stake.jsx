@@ -187,7 +187,7 @@ const LogoWithText = styled.div`
   align-items: center;
 `;
 
-const NEARInputComp = (props) => (
+const NEARInputComp = ({ value, onChange, error }) => (
   <input
     style={{
       "text-align": "right",
@@ -196,16 +196,17 @@ const NEARInputComp = (props) => (
       border: "0",
       "font-size": "16px",
       "font-weight": "bold",
-      color: props.error ? "#ec6868" : "white",
+      color: error ? "#ec6868" : "white",
       outline: "none",
+      "box-shadow": "none",
       "margin-right": "16px",
 
       "-webkit-appearance": "none",
       "-moz-appearance": "textfield",
     }}
     placeholder="NEAR amount to stake"
-    value={props.value}
-    onChange={props.onChange}
+    value={value}
+    onChange={onChange}
   />
 );
 
