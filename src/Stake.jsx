@@ -216,6 +216,13 @@ const MaxTexture = styled.div`
   cursor: pointer;
 `;
 
+const FooterLink = styled.a`
+    color: #4451FD;
+    text-decoration: underline;
+    transition: all 0.2s ease-in-out;
+    margin-top: 12px;
+`;
+
 const NEARInput = ({ value, onChange, onClickMax }) => {
   return (
     <NEARInputContainer>
@@ -356,5 +363,11 @@ return (
         Stake
       </StakeButton>
     </StakeFormWrapper>
+    <FooterLink
+      href="https://app.linearprotocol.org/?tab=unstake"
+      target="_blank"
+    >
+      Go to Unstake <strong>$LiNEAR</strong>
+    </FooterLink>
   </Main>
 );
