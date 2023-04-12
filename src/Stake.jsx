@@ -259,8 +259,25 @@ const NEARInput = ({ value, onChange, onClickMax }) => {
   );
 };
 
+const BrandImage = () => (
+  <img
+    style={{
+      height: "20px",
+      width: "auto",
+      position: "absolute",
+      left: "32px",
+      top: "20px",
+    }}
+    src="https://ipfs.near.social/ipfs/bafkreifb45onycd5nycpvt6vboe54zc5c4lynjg5xare4i2tqblwlkogoq"
+    alt="Brand Logo"
+    height={20}
+    width={auto}
+  />
+);
+
 return (
   <Main>
+    <BrandImage />
     <Title>Stake Your NEAR</Title>
     <Description>
       Stake NEAR and receive LiNEAR while earning staking rewards
