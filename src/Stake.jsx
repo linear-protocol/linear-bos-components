@@ -45,8 +45,12 @@ function getAPY() {
 State.init({
   inputValue: "",
   inputError: "",
+  nearBalance: getNearBalance(accountId),
 });
-let nearBalance = getNearBalance(accountId);
+const nearBalance =
+  !state.nearBalance || state.nearBalance === "-"
+    ? getNearBalance(accountId)
+    : state.nearBalance;
 const apy = getAPY();
 
 function isValid(a) {
@@ -393,7 +397,11 @@ return (
             const balance = getNearBalance(accountId);
             if (balance !== nearBalance) {
               clearInterval(interval);
-              nearBalance = balance;
+              State.update({
+                inputValue: "",
+                inputError: "",
+                nearBalance: balance,
+              });
             }
           }, 500);
         }}
