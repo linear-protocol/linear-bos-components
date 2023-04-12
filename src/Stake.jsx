@@ -57,6 +57,15 @@ function isValid(a) {
   return true;
 }
 
+const linearPrice = Big(
+  Near.view("linear-protocol.near", "ft_price", `{}`) ?? "0"
+)
+  .div(Big(10).pow(24))
+  .toFixed();
+const youWillReceive = Big(isValid(state.inputValue) ? state.inputValue : 0)
+  .div(linearPrice)
+  .toFixed(5);
+
 const Title = styled.h1`
       font-size: 40px;
       font-weight: bold;
@@ -84,7 +93,7 @@ const Description = styled.div`
 const StakeFormWrapper = styled.div`
       width: 100%;
       max-width: 500px;
-      padding: 20px;
+      padding: 8px 20px;
       background: #0f0f31;
       border-radius: 10px;
   `;
@@ -223,6 +232,14 @@ const FooterLink = styled.a`
     transition: all 0.2s ease-in-out;
     margin-top: 12px;
     text-underline-offset: 3px;
+`;
+
+const YouWillReceive = styled.div`
+    display: flex;
+    justify-content: space-between;
+
+    font-size: 14px;
+    margin-top: 16px;
 `;
 
 const NEARInput = ({ value, onChange, onClickMax }) => {
@@ -371,6 +388,10 @@ return (
       >
         Stake
       </StakeButton>
+      <YouWillReceive>
+        <p>You will receive </p>
+        <p>{youWillReceive} LiNEAR</p>
+      </YouWillReceive>
     </StakeFormWrapper>
     <FooterLink
       href="https://app.linearprotocol.org/?tab=unstake"
