@@ -42,14 +42,14 @@ function getAPY() {
   return Big(apy).mul(100).toFixed(2) + "%";
 }
 
+const nearBalance = getNearBalance(accountId);
+const apy = getAPY();
 State.init({
   inputValue: "",
   inputError: "",
-  nearBalance: getNearBalance(accountId),
-  apy: getAPY(),
+  nearBalance,
+  apy,
 });
-const nearBalance = state.nearBalance;
-const apy = state.apy;
 
 function isValid(a) {
   if (!a) return false;
@@ -61,11 +61,13 @@ function isValid(a) {
 const linearPrice = Big(
   Near.view("linear-protocol.near", "ft_price", `{}`) ?? "0"
 )
-  .div(Big(10).pow(24))
-  .toFixed();
-const youWillReceive = Big(isValid(state.inputValue) ? state.inputValue : 0)
-  .div(linearPrice)
-  .toFixed(5, BIG_ROUND_DOWN);
+  .div(Big(10).pow(24));
+const youWillReceive = (
+  linearPrice.lte(0)
+    ? Big(0)
+    : Big(isValid(state.inputValue) ? state.inputValue : 0)
+      .div(linearPrice)
+).toFixed(5, BIG_ROUND_DOWN);
 
 const Title = styled.h1`
       font-size: 40px;
