@@ -222,6 +222,7 @@ const FooterLink = styled.a`
     text-decoration: underline;
     transition: all 0.2s ease-in-out;
     margin-top: 12px;
+    text-underline-offset: 3px;
 `;
 
 const NEARInput = ({ value, onChange, onClickMax }) => {
