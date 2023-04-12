@@ -7,6 +7,7 @@ State.init(INITIAL_VALUE);
 const accountId = props.accountId || context.accountId;
 const isSignedIn = !!accountId;
 const NEAR_DECIMALS = 24;
+const BIG_ROUND_DOWN = 0;
 const LiNEAR_CONTRACT_ID = "linear-protocol.near";
 
 function getNearBalance(accountId) {
@@ -35,7 +36,7 @@ function getNearBalance(accountId) {
   const balance = availableBalance
     .div(new Big(10).pow(NEAR_DECIMALS))
     .minus(COMMON_MIN_BALANCE);
-  return balance.lt(0) ? "0" : balance.toFixed(5);
+  return balance.lt(0) ? "0" : balance.toFixed(5, BIG_ROUND_DOWN);
 }
 
 function getAPY() {
@@ -64,7 +65,7 @@ const linearPrice = Big(
   .toFixed();
 const youWillReceive = Big(isValid(state.inputValue) ? state.inputValue : 0)
   .div(linearPrice)
-  .toFixed(5);
+  .toFixed(5, BIG_ROUND_DOWN);
 
 const Title = styled.h1`
       font-size: 40px;
