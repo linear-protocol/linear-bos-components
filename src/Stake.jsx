@@ -24,11 +24,11 @@ function getNearBalance(accountId) {
   const { amount, storage_usage } = account.body.result;
   const COMMON_MIN_BALANCE = 0.05;
   if (!amount) return "-";
-  const availableBalance = new Big(amount || 0).minus(
-    new Big(storage_usage).mul(new Big(10).pow(19))
+  const availableBalance = Big(amount || 0).minus(
+    Big(storage_usage).mul(Big(10).pow(19))
   );
   const balance = availableBalance
-    .div(new Big(10).pow(NEAR_DECIMALS))
+    .div(Big(10).pow(NEAR_DECIMALS))
     .minus(COMMON_MIN_BALANCE);
   return balance.lt(0) ? "0" : balance.toFixed(5, BIG_ROUND_DOWN);
 }
@@ -372,13 +372,13 @@ return (
             nearBalance &&
             (isNaN(Number(stakeAmount)) ||
               stakeAmount === "" ||
-              new Big(stakeAmount).lt(1) ||
-              new Big(stakeAmount).gt(new Big(nearBalance)))
+              Big(stakeAmount).lt(1) ||
+              Big(stakeAmount).gt(Big(nearBalance)))
           ) {
             if (
               isNaN(Number(stakeAmount)) ||
               stakeAmount === "" ||
-              new Big(stakeAmount).lt(1)
+              Big(stakeAmount).lt(1)
             ) {
               State.update({ ...state, inputError: "Stake at least 1 NEAR" });
             } else if (Big(stakeAmount).gt(Big(nearBalance))) {
@@ -394,8 +394,8 @@ return (
             "deposit_and_stake",
             {},
             undefined,
-            new Big(state.inputValue)
-              .mul(new Big(10).pow(NEAR_DECIMALS))
+            Big(state.inputValue)
+              .mul(Big(10).pow(NEAR_DECIMALS))
               .toFixed(0)
           );
           // check and update balance
