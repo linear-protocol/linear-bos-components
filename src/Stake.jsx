@@ -314,13 +314,11 @@ return (
                 Big(stakeAmount).lt(1)
               ) {
                 State.update({
-                  ...state,
                   inputValue: stakeAmount,
                   inputError: "Stake at least 1 NEAR",
                 });
               } else {
                 State.update({
-                  ...state,
                   inputValue: stakeAmount,
                   inputError: `Max is ${nearBalance} NEAR`,
                 });
@@ -328,7 +326,6 @@ return (
               return;
             }
             State.update({
-              ...state,
               inputValue: stakeAmount,
               inputError: "",
             });
@@ -340,14 +337,12 @@ return (
               Big(nearBalance).lt(1)
             ) {
               State.update({
-                ...state,
                 inputValue: nearBalance,
                 inputError: "Stake at least 1 NEAR",
               });
               return;
             } else {
               State.update({
-                ...state,
                 inputValue: nearBalance,
                 inputError: "",
               });
@@ -376,10 +371,9 @@ return (
               stakeAmount === "" ||
               Big(stakeAmount).lt(1)
             ) {
-              State.update({ ...state, inputError: "Stake at least 1 NEAR" });
+              State.update({ inputError: "Stake at least 1 NEAR" });
             } else if (Big(stakeAmount).gt(Big(nearBalance))) {
               State.update({
-                ...state,
                 inputError: `Max is ${nearBalance} NEAR`,
               });
             } else setInputError("");
