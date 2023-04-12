@@ -42,14 +42,14 @@ function getAPY() {
   return Big(apy).mul(100).toFixed(2) + "%";
 }
 
-const nearBalance = getNearBalance(accountId);
-const apy = getAPY();
+
 State.init({
   inputValue: "",
   inputError: "",
-  nearBalance,
-  apy,
+  nearBalance: getNearBalance(accountId),
 });
+const nearBalance = state.nearBalance === "-" ? getNearBalance(accountId) : state.nearBalance;
+const apy = getAPY();
 
 function isValid(a) {
   if (!a) return false;
@@ -60,13 +60,11 @@ function isValid(a) {
 
 const linearPrice = Big(
   Near.view("linear-protocol.near", "ft_price", `{}`) ?? "0"
-)
-  .div(Big(10).pow(24));
+).div(Big(10).pow(24));
 const youWillReceive = (
   linearPrice.lte(0)
     ? Big(0)
-    : Big(isValid(state.inputValue) ? state.inputValue : 0)
-      .div(linearPrice)
+    : Big(isValid(state.inputValue) ? state.inputValue : 0).div(linearPrice)
 ).toFixed(5, BIG_ROUND_DOWN);
 
 const Title = styled.h1`
@@ -396,7 +394,7 @@ return (
             } else setInputError("");
             return;
           }
-          await Near.call(
+          Near.call(
             LiNEAR_CONTRACT_ID,
             "deposit_and_stake",
             {},
@@ -405,12 +403,18 @@ return (
               .mul(new Big(10).pow(NEAR_DECIMALS))
               .toFixed(0)
           );
-          State.update({
-            inputValue: "",
-            inputError: "",
-            nearBalance: getNearBalance(accountId),
-            apy: getAPY(),
-          });
+          // check and update balance
+          const interval = setInterval(() => {
+            const balance = getNearBalance(accountId);
+            if (balance !== nearBalance) {
+              clearInterval(interval);
+              State.update({
+                inputValue: "",
+                inputError: "",
+                nearBalance: balance,
+              });
+            }
+          }, 500);
         }}
       >
         Stake
@@ -424,7 +428,7 @@ return (
       href="https://app.linearprotocol.org/?tab=unstake"
       target="_blank"
     >
-      Go to Unstake <strong>$LiNEAR</strong>
+      Unstake <strong>$LiNEAR</strong>
     </FooterLink>
   </Main>
 );
