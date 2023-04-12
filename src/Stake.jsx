@@ -42,13 +42,13 @@ function getAPY() {
   return Big(apy).mul(100).toFixed(2) + "%";
 }
 
-
 State.init({
   inputValue: "",
   inputError: "",
   nearBalance: getNearBalance(accountId),
 });
-const nearBalance = state.nearBalance === "-" ? getNearBalance(accountId) : state.nearBalance;
+const nearBalance =
+  state.nearBalance === "-" ? getNearBalance(accountId) : state.nearBalance;
 const apy = getAPY();
 
 function isValid(a) {
@@ -142,7 +142,6 @@ const InputWrapper = styled.div`
       border-radius: 10px;
       background: #0d0d2b;
       padding: 20px;
-      margin-bottom: 20px;
   `;
 
 const HorizentalLine = styled.hr`
