@@ -260,11 +260,6 @@ return (
               return;
             }
             let stakeAmount = targetValue.replace(/^0+/, "0"); // remove prefix 0
-            /** limit 24 decimals */
-            const most24DecimalsPattern = /^-?\d+(\.\d{0,24})?$/;
-            if (!most24DecimalsPattern.test(stakeAmount)) {
-              stakeAmount = value.match(most24DecimalsPattern)[0];
-            }
             if (
               nearBalance &&
               (isNaN(Number(stakeAmount)) ||
@@ -296,6 +291,12 @@ return (
                 });
               }
               return;
+            }
+
+            // limit 24 decimals
+            const most24DecimalsPattern = /^-?\d+(\.\d{0,24})?$/;
+            if (!most24DecimalsPattern.test(stakeAmount)) {
+              stakeAmount = stakeAmount.match(most24DecimalsPattern)[0];
             }
             State.update({
               ...state,
