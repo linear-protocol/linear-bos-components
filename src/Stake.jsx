@@ -48,7 +48,9 @@ State.init({
   nearBalance: getNearBalance(accountId),
 });
 const nearBalance =
-  state.nearBalance === "-" ? getNearBalance(accountId) : state.nearBalance;
+  !state.nearBalance || state.nearBalance === "-"
+    ? getNearBalance(accountId)
+    : state.nearBalance;
 const apy = getAPY();
 
 function isValid(a) {
