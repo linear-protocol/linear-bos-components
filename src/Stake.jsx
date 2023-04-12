@@ -1,9 +1,3 @@
-const INITIAL_VALUE = {
-  inputValue: "",
-  inputError: "",
-};
-State.init(INITIAL_VALUE);
-
 const accountId = props.accountId || context.accountId;
 const isSignedIn = !!accountId;
 const NEAR_DECIMALS = 24;
@@ -48,8 +42,14 @@ function getAPY() {
   return Big(apy).mul(100).toFixed(2) + "%";
 }
 
-const apy = getAPY();
-const nearBalance = getNearBalance(accountId);
+State.init({
+  inputValue: "",
+  inputError: "",
+  nearBalance: getNearBalance(accountId),
+  apy: getAPY(),
+});
+const nearBalance = state.nearBalance;
+const apy = state.apy;
 
 function isValid(a) {
   if (!a) return false;
@@ -394,7 +394,7 @@ return (
             } else setInputError("");
             return;
           }
-          Near.call(
+          await Near.call(
             LiNEAR_CONTRACT_ID,
             "deposit_and_stake",
             {},
@@ -403,7 +403,12 @@ return (
               .mul(new Big(10).pow(NEAR_DECIMALS))
               .toFixed(0)
           );
-          State.update(INITIAL_VALUE);
+          State.update({
+            inputValue: "",
+            inputError: "",
+            nearBalance: getNearBalance(accountId),
+            apy: getAPY(),
+          });
         }}
       >
         Stake
