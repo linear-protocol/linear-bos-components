@@ -294,6 +294,13 @@ return (
         <NEARInput
           value={state.inputValue}
           onChange={(e) => {
+            // Has user signed in?
+            if (!isSignedIn) {
+              State.update({
+                inputError: "Sign in please",
+              });
+              return ;
+            }
             const targetValue = e.target.value;
             if (targetValue !== "" && !targetValue.match(/^\d*(\.\d*)?$/)) {
               return;
