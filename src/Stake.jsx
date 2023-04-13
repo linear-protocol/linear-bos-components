@@ -212,43 +212,6 @@ const YouWillReceive = styled.div`
     margin-top: 16px;
 `;
 
-const NEARInput = ({ value, onChange, onClickMax }) => {
-  return (
-    <NEARInputContainer>
-      <LogoWithText>
-        <img
-          src={`https://ipfs.near.social/ipfs/bafkreid5xjykpqdvinmj432ldrkbjisrp3m4n25n4xefd32eml674ypqly`}
-          width={26}
-          height={26}
-          alt="NEAR Icon"
-        />
-        <NEARTexture>NEAR</NEARTexture>
-      </LogoWithText>
-      <input
-        style={{
-          "text-align": "right",
-          width: "100%",
-          background: "transparent",
-          border: "0",
-          "font-size": "16px",
-          "font-weight": "bold",
-          color: state.inputError ? "#ec6868" : "white",
-          outline: "none",
-          "box-shadow": "none",
-          "margin-right": "16px",
-
-          "-webkit-appearance": "none",
-          "-moz-appearance": "textfield",
-        }}
-        placeholder="NEAR amount to stake"
-        value={value}
-        onChange={onChange}
-      />
-      <MaxTexture onClick={onClickMax}>MAX</MaxTexture>
-    </NEARInputContainer>
-  );
-};
-
 return (
   <Main>
     <a href="https://linearprotocol.org/" target="_blank">
