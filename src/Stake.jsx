@@ -179,15 +179,6 @@ const NEARInputContainer = styled.div`
   justify-content: space-between;
 `;
 
-const NEARIcon = () => (
-  <img
-    src={`https://ipfs.near.social/ipfs/bafkreid5xjykpqdvinmj432ldrkbjisrp3m4n25n4xefd32eml674ypqly`}
-    width={26}
-    height={26}
-    alt="NEAR Icon"
-  />
-);
-
 const NEARTexture = styled.div`
   font-size: 24px;
   font-weight: bold;
@@ -198,29 +189,6 @@ const LogoWithText = styled.div`
   display: flex;
   align-items: center;
 `;
-
-const NEARInputComp = ({ value, onChange, error }) => (
-  <input
-    style={{
-      "text-align": "right",
-      width: "100%",
-      background: "transparent",
-      border: "0",
-      "font-size": "16px",
-      "font-weight": "bold",
-      color: error ? "#ec6868" : "white",
-      outline: "none",
-      "box-shadow": "none",
-      "margin-right": "16px",
-
-      "-webkit-appearance": "none",
-      "-moz-appearance": "textfield",
-    }}
-    placeholder="NEAR amount to stake"
-    value={value}
-    onChange={onChange}
-  />
-);
 
 const MaxTexture = styled.div`
   font-size: 24px;
@@ -244,44 +212,23 @@ const YouWillReceive = styled.div`
     margin-top: 16px;
 `;
 
-const NEARInput = ({ value, onChange, onClickMax }) => {
-  return (
-    <NEARInputContainer>
-      <LogoWithText>
-        <NEARIcon />
-        <NEARTexture>NEAR</NEARTexture>
-      </LogoWithText>
-      <NEARInputComp
-        value={value}
-        onChange={onChange}
-        error={state.inputError}
-      />
-      <MaxTexture onClick={onClickMax}>MAX</MaxTexture>
-    </NEARInputContainer>
-  );
-};
-
-const BrandImage = () => (
-  <a href="https://linearprotocol.org/" target="_blank">
-    <img
-      style={{
-        height: "20px",
-        width: "auto",
-        position: "absolute",
-        left: "32px",
-        top: "44px",
-      }}
-      src="https://ipfs.near.social/ipfs/bafkreifb45onycd5nycpvt6vboe54zc5c4lynjg5xare4i2tqblwlkogoq"
-      alt="Brand Logo"
-      height={20}
-      width={auto}
-    />
-  </a>
-);
-
 return (
   <Main>
-    <BrandImage />
+    <a href="https://linearprotocol.org/" target="_blank">
+      <img
+        style={{
+          height: "20px",
+          width: "auto",
+          position: "absolute",
+          left: "32px",
+          top: "44px",
+        }}
+        src="https://ipfs.near.social/ipfs/bafkreifb45onycd5nycpvt6vboe54zc5c4lynjg5xare4i2tqblwlkogoq"
+        alt="Brand Logo"
+        height={20}
+        width={"auto"}
+      />
+    </a>
     <Title>Stake Your NEAR</Title>
     <Description>
       Stake NEAR and receive LiNEAR while earning staking rewards
@@ -291,75 +238,106 @@ return (
     </APYContainer>
     <StakeFormWrapper>
       <InputWrapper>
-        <NEARInput
-          value={state.inputValue}
-          onChange={(e) => {
-            // Has user signed in?
-            if (!isSignedIn) {
-              State.update({
-                inputError: "Sign in please",
-              });
-              return;
-            }
-            const targetValue = e.target.value;
-            if (targetValue !== "" && !targetValue.match(/^\d*(\.\d*)?$/)) {
-              return;
-            }
-            let stakeAmount = targetValue.replace(/^0+/, "0"); // remove prefix 0
-            // limit 24 decimals
-            const most24DecimalsPattern = /^-?\d+(\.\d{0,24})?/;
-            let values = stakeAmount.match(most24DecimalsPattern);
-            if (values) {
-              stakeAmount = values[0];
-            }
-            if (
-              nearBalance &&
-              (isNaN(Number(stakeAmount)) ||
-                stakeAmount === "" ||
-                Big(stakeAmount).lt(1) ||
-                Big(stakeAmount).gt(Big(nearBalance)))
-            ) {
-              if (
-                isNaN(Number(stakeAmount)) ||
-                stakeAmount === "" ||
-                Big(stakeAmount).lt(1)
-              ) {
+        <NEARInputContainer>
+          <LogoWithText>
+            <img
+              src={`https://ipfs.near.social/ipfs/bafkreid5xjykpqdvinmj432ldrkbjisrp3m4n25n4xefd32eml674ypqly`}
+              width={26}
+              height={26}
+              alt="NEAR Icon"
+            />
+            <NEARTexture>NEAR</NEARTexture>
+          </LogoWithText>
+          <input
+            style={{
+              "text-align": "right",
+              width: "100%",
+              background: "transparent",
+              border: "0",
+              "font-size": "16px",
+              "font-weight": "bold",
+              color: state.inputError ? "#ec6868" : "white",
+              outline: "none",
+              "box-shadow": "none",
+              "margin-right": "16px",
+
+              "-webkit-appearance": "none",
+              "-moz-appearance": "textfield",
+            }}
+            placeholder="NEAR amount to stake"
+            value={state.inputValue}
+            onChange={(e) => {
+              // Has user signed in?
+              if (!isSignedIn) {
                 State.update({
-                  inputValue: stakeAmount,
-                  inputError: "Stake at least 1 NEAR",
+                  inputError: "Sign in please",
                 });
-              } else {
-                State.update({
-                  inputValue: stakeAmount,
-                  inputError: `Max is ${nearBalance} NEAR`,
-                });
+                return;
               }
-              return;
-            }
-            State.update({
-              inputValue: stakeAmount,
-              inputError: "",
-            });
-          }}
-          onClickMax={() => {
-            if (
-              isNaN(Number(nearBalance)) ||
-              nearBalance === "" ||
-              Big(nearBalance).lt(1)
-            ) {
+              const targetValue = e.target.value;
+              if (targetValue !== "" && !targetValue.match(/^\d*(\.\d*)?$/)) {
+                return;
+              }
+              let stakeAmount = targetValue.replace(/^0+/, "0"); // remove prefix 0
+              // limit 24 decimals
+              const most24DecimalsPattern = /^-?\d+(\.\d{0,24})?/;
+              let values = stakeAmount.match(most24DecimalsPattern);
+              if (values) {
+                stakeAmount = values[0];
+              }
+              if (
+                nearBalance &&
+                (isNaN(Number(stakeAmount)) ||
+                  stakeAmount === "" ||
+                  Big(stakeAmount).lt(1) ||
+                  Big(stakeAmount).gt(Big(nearBalance)))
+              ) {
+                if (
+                  isNaN(Number(stakeAmount)) ||
+                  stakeAmount === "" ||
+                  Big(stakeAmount).lt(1)
+                ) {
+                  State.update({
+                    inputValue: stakeAmount,
+                    inputError: "Stake at least 1 NEAR",
+                  });
+                } else {
+                  State.update({
+                    inputValue: stakeAmount,
+                    inputError: `Max is ${nearBalance} NEAR`,
+                  });
+                }
+                return;
+              }
               State.update({
-                inputValue: nearBalance,
-                inputError: "Stake at least 1 NEAR",
-              });
-              return;
-            } else {
-              State.update({
-                inputValue: nearBalance,
+                inputValue: stakeAmount,
                 inputError: "",
               });
-            }
-          }}
-        />
+            }}
+          />
+          <MaxTexture
+            onClick={() => {
+              if (
+                isNaN(Number(nearBalance)) ||
+                nearBalance === "" ||
+                Big(nearBalance).lt(1)
+              ) {
+                State.update({
+                  inputValue: nearBalance,
+                  inputError: "Stake at least 1 NEAR",
+                });
+                return;
+              } else {
+                State.update({
+                  inputValue: nearBalance,
+                  inputError: "",
+                });
+              }
+            }}
+          >
+            MAX
+          </MaxTexture>
+        </NEARInputContainer>
         <HorizentalLine />
         <BalanceContainer>
           <p>Balance: {nearBalance} NEAR</p>
