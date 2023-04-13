@@ -269,7 +269,7 @@ const BrandImage = () => (
         width: "auto",
         position: "absolute",
         left: "32px",
-        top: "20px",
+        top: "44px",
       }}
       src="https://ipfs.near.social/ipfs/bafkreifb45onycd5nycpvt6vboe54zc5c4lynjg5xare4i2tqblwlkogoq"
       alt="Brand Logo"
@@ -299,7 +299,7 @@ return (
               State.update({
                 inputError: "Sign in please",
               });
-              return ;
+              return;
             }
             const targetValue = e.target.value;
             if (targetValue !== "" && !targetValue.match(/^\d*(\.\d*)?$/)) {
@@ -395,9 +395,7 @@ return (
             "deposit_and_stake",
             {},
             undefined,
-            Big(state.inputValue)
-              .mul(Big(10).pow(NEAR_DECIMALS))
-              .toFixed(0)
+            Big(state.inputValue).mul(Big(10).pow(NEAR_DECIMALS)).toFixed(0)
           );
           // check and update balance
           const interval = setInterval(() => {
