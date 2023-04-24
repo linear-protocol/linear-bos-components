@@ -46,6 +46,7 @@ State.init({
   inputValue: "",
   inputError: "",
   nearBalance: getNearBalance(accountId),
+  tabName: "stake", // stake | unstake
 });
 const nearBalance =
   !state.nearBalance || state.nearBalance === "-"
@@ -212,6 +213,33 @@ const YouWillReceive = styled.div`
     margin-top: 16px;
 `;
 
+const TabContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+    background: #2e2c44;
+    border-radius: 9999px;
+
+    padding: 4px;
+
+`;
+
+const TabItem = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 128px;
+    border-radius: 9999px;
+
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: all 0.3s ease-in-o
+`;
+
 return (
   <Main>
     <a href="https://linearprotocol.org/" target="_blank">
@@ -236,6 +264,34 @@ return (
     <APYContainer>
       APY <span>{apy}</span>
     </APYContainer>
+    <TabContainer>
+      <TabItem
+        style={{
+          background: state.tabName === "stake" ? "#5137ee" : "transparent",
+        }}
+        onClick={() =>
+          State.update({
+            ...state,
+            tabName: "stake",
+          })
+        }
+      >
+        Stake
+      </TabItem>
+      <TabItem
+        style={{
+          background: state.tabName === "unstake" ? "#5137ee" : "transparent",
+        }}
+        onClick={() =>
+          State.update({
+            ...state,
+            tabName: "unstake",
+          })
+        }
+      >
+        Unstake
+      </TabItem>
+    </TabContainer>
     <StakeFormWrapper>
       <InputWrapper>
         <NEARInputContainer>
