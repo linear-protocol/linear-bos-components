@@ -10,6 +10,7 @@ on:
 
 jobs:
   testnet-preivew:
+    name: testnet preview
     uses: ./.github/workflows/deploy-testnet.yml
     with:
       deploy-account-address: ${{ vars.DEPLOY_ACCOUNT }}
