@@ -1,4 +1,4 @@
-name: Testnet Preview
+name: Deploy
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - 'src/**'
 
 jobs:
-  testnet-preivew:
+  testnet-preview:
     name: testnet preview
     uses: ./.github/workflows/deploy-testnet.yml
     with:

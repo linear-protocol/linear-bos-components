@@ -24,9 +24,9 @@ on:
         description: "Private key in `ed25519:<private_key>` format for signing transaction"
         required: true
 jobs:
-  deploy-widgets:
+  deploy-components:
     runs-on: ubuntu-latest
-    name: Deploy widgets to v1.social08.testnet (testnet)
+    name: Deploy to testnet
     env:
       BOS_DEPLOY_ACCOUNT_ID: ${{ inputs.deploy-account-address }}
       BOS_SIGNER_ACCOUNT_ID: ${{ inputs.signer-account-address }}
@@ -41,6 +41,6 @@ jobs:
         run: |
           curl --proto '=https' --tlsv1.2 -LsSf https://github.com/FroVolod/bos-cli-rs/releases/download/v${{ inputs.cli-version }}/bos-cli-v${{ inputs.cli-version }}-installer.sh | sh
 
-      - name: Deploy widgets
+      - name: Deploy components
         run: |
           bos components deploy "$BOS_DEPLOY_ACCOUNT_ID" sign-as "$BOS_SIGNER_ACCOUNT_ID" network-config testnet sign-with-plaintext-private-key --signer-public-key "$BOS_SIGNER_PUBLIC_KEY" --signer-private-key "$BOS_SIGNER_PRIVATE_KEY" send
