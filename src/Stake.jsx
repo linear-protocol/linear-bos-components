@@ -415,10 +415,7 @@ return (
         <p>{youWillReceive} LiNEAR</p>
       </YouWillReceive>
     </StakeFormWrapper>
-    <FooterLink
-      href={`https://${appUrl}/?tab=unstake`}
-      target="_blank"
-    >
+    <FooterLink href={`${config.appUrl}/?tab=unstake`} target="_blank">
       Unstake <strong>$LiNEAR</strong>
     </FooterLink>
   </Main>
