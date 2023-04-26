@@ -2,10 +2,27 @@ const accountId = props.accountId || context.accountId;
 const isSignedIn = !!accountId;
 const NEAR_DECIMALS = 24;
 const BIG_ROUND_DOWN = 0;
-const LiNEAR_CONTRACT_ID = "linear-protocol.near";
+
+function getConfig(network) {
+  switch (network) {
+    case "mainnet":
+      return {
+        contractId: "linear-protocol.near",
+        nodeUrl: "https://rpc.mainnet.near.org",
+      };
+    case "testnet":
+      return {
+        contractId: "linear-protocol.testnet",
+        nodeUrl: "https://rpc.testnet.near.org",
+      };
+    default:
+      throw Error(`Unconfigured environment '${network}'.`);
+  }
+}
+const config = getConfig(context.networkId);
 
 function getNearBalance(accountId) {
-  const account = fetch("https://rpc.mainnet.near.org", {
+  const account = fetch(config.nodeUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -61,7 +78,7 @@ function isValid(a) {
 }
 
 const linearPrice = Big(
-  Near.view("linear-protocol.near", "ft_price", `{}`) ?? "0"
+  Near.view(config.contractId, "ft_price", `{}`) ?? "0"
 ).div(Big(10).pow(24));
 const youWillReceive = (
   linearPrice.lte(0)
@@ -369,7 +386,7 @@ return (
             return;
           }
           Near.call(
-            LiNEAR_CONTRACT_ID,
+            config.contractId,
             "deposit_and_stake",
             {},
             undefined,
