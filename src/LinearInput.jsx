@@ -83,7 +83,7 @@ return (
     </NEARInputContainer>
     <HorizentalLine />
     <BalanceContainer>
-      <p>Balance: {nearBalance} NEAR</p>
+      <p>Balance: {props.nearBalance} NEAR</p>
       <p className="error">{props.inputError}</p>
     </BalanceContainer>
   </InputWrapper>
