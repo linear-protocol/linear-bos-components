@@ -9,12 +9,14 @@ function getConfig(network) {
       return {
         contractId: "linear-protocol.near",
         nodeUrl: "https://rpc.mainnet.near.org",
-      }
-    default: // testnet
+      };
+    case "testnet":
       return {
         contractId: "linear-protocol.testnet",
         nodeUrl: "https://rpc.testnet.near.org",
-      }
+      };
+    default:
+      throw Error(`Unconfigured environment '${network}'.`);
   }
 }
 const config = getConfig(context.networkId);
