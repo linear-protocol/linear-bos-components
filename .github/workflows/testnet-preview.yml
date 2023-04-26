@@ -12,8 +12,8 @@ jobs:
   testnet-preivew:
     uses: ./.github/workflows/deploy-testnet.yml
     with:
-      deploy-account-address: ${{ env.DEPLOY_ACCOUNT }}
-      signer-account-address: ${{ env.DEPLOY_ACCOUNT }}
-      signer-public-key: ${{ env.SIGNER_PUBLIC_KEY }}
+      deploy-account-address: ${{ vars.DEPLOY_ACCOUNT }}
+      signer-account-address: ${{ vars.DEPLOY_ACCOUNT }}
+      signer-public-key: ${{ vars.SIGNER_PUBLIC_KEY }}
     secrets:
       SIGNER_PRIVATE_KEY: ${{ secrets.SIGNER_PRIVATE_KEY }}
