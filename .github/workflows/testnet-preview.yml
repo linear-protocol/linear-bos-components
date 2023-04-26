@@ -1,0 +1,20 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'src/**'
+
+jobs:
+  testnet-deploy:
+    name: testnet deploy
+    uses: ./.github/workflows/deploy-testnet.yml
+    with:
+      deploy-account-address: ${{ vars.DEPLOY_ACCOUNT }}
+      signer-account-address: ${{ vars.DEPLOY_ACCOUNT }}
+      signer-public-key: ${{ vars.SIGNER_PUBLIC_KEY }}
+    secrets:
+      SIGNER_PRIVATE_KEY: ${{ secrets.SIGNER_PRIVATE_KEY }}
