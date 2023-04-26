@@ -9,8 +9,8 @@ on:
       - 'src/**'
 
 jobs:
-  testnet-preview:
-    name: testnet preview
+  testnet-deploy:
+    name: testnet deploy
     uses: ./.github/workflows/deploy-testnet.yml
     with:
       deploy-account-address: ${{ vars.DEPLOY_ACCOUNT }}
