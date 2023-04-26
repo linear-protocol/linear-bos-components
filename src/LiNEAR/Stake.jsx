@@ -206,7 +206,7 @@ const StakeFormWrapper = styled.div`
 return (
   <StakeFormWrapper>
     <Widget
-      src="linear-builder.testnet/widget/LinearInput"
+      src="linear-builder.testnet/widget/LiNEAR.Input"
       props={{
         placeholder: "NEAR amount to stake",
         value: state.inputValue,
@@ -217,7 +217,7 @@ return (
       }}
     />
     <Widget
-      src="linear-builder.testnet/widget/LinearButton"
+      src="linear-builder.testnet/widget/LiNEAR.Button"
       props={{
         onClick: onClickStake,
         disabled: disabledStakeButton,
@@ -225,7 +225,7 @@ return (
       }}
     />
     <Widget
-      src="linear-builder.testnet/widget/YouWillReceive"
+      src="linear-builder.testnet/widget/LiNEAR.YouWillReceive"
       props={{ text: `${youWillReceive} LiNEAR` }}
     />
   </StakeFormWrapper>

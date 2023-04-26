@@ -57,18 +57,18 @@ const updateTabName = (tabName) =>
 
 return (
   <Main>
-    <Widget src="linear-builder.testnet/widget/BrandLogo" />
-    <Widget src="linear-builder.testnet/widget/TitleAndDescription" />
-    <Widget src="linear-builder.testnet/widget/Apy" />
+    <Widget src="linear-builder.testnet/widget/LiNEAR.BrandLogo" />
+    <Widget src="linear-builder.testnet/widget/LiNEAR.TitleAndDescription" />
+    <Widget src="linear-builder.testnet/widget/LiNEAR.Apy" />
     <Widget
-      src="linear-builder.testnet/widget/LinearTab"
+      src="linear-builder.testnet/widget/LiNEAR.Tab"
       props={{
         tabName: state.tabName,
         updateTabName,
       }}
     />
     {state.tabName === "stake" && (
-      <Widget src="linear-builder.testnet/widget/StakeForm" />
+      <Widget src="linear-builder.testnet/widget/LiNEAR.Stake" />
     )}
   </Main>
 );
