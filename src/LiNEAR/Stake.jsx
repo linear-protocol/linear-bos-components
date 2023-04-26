@@ -225,7 +225,7 @@ return (
       }}
     />
     <Widget
-      src="linear-builder.testnet/widget/LiNEAR.Label.YouWillReceive"
+      src="linear-builder.testnet/widget/LiNEAR.Message.YouWillReceive"
       props={{ text: `${youWillReceive} LiNEAR` }}
     />
   </StakeFormWrapper>
