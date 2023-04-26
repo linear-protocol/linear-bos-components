@@ -9,11 +9,13 @@ function getConfig(network) {
       return {
         contractId: "linear-protocol.near",
         nodeUrl: "https://rpc.mainnet.near.org",
+        appUrl: "https://app.linearprotocol.org",
       };
     case "testnet":
       return {
         contractId: "linear-protocol.testnet",
         nodeUrl: "https://rpc.testnet.near.org",
+        appUrl: "https://testnet.linearprotocol.org",
       };
     default:
       throw Error(`Unconfigured environment '${network}'.`);
@@ -413,10 +415,7 @@ return (
         <p>{youWillReceive} LiNEAR</p>
       </YouWillReceive>
     </StakeFormWrapper>
-    <FooterLink
-      href="https://app.linearprotocol.org/?tab=unstake"
-      target="_blank"
-    >
+    <FooterLink href={`${config.appUrl}/?tab=unstake`} target="_blank">
       Unstake <strong>$LiNEAR</strong>
     </FooterLink>
   </Main>
