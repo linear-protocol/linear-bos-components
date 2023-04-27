@@ -173,12 +173,6 @@ const onClickUnstake = async () => {
 const disabledStakeButton =
   !isValid(state.inputValue) || Big(state.inputValue).eq(0) || state.inputError;
 
-const youWillReceive = (
-  linearPrice.lte(0)
-    ? Big(0)
-    : Big(isValid(state.inputValue) ? state.inputValue : 0).mul(linearPrice)
-).toFixed(5, BIG_ROUND_DOWN);
-
 const StakeFormWrapper = styled.div`
   width: 100%;
   max-width: 500px;
@@ -272,10 +266,6 @@ return (
         <UnstakeFee>Unstake fee: 0</UnstakeFee>
       </UnstakeTab>
     </UnstakeTabWrapper>
-    <Widget
-      src="linear-builder.testnet/widget/LiNEAR.Message.YouWillReceive"
-      props={{ text: `${youWillReceive} NEAR` }}
-    />
     {state.showConfirmInstantUnstake && (
       <Widget
         src="linear-builder.testnet/widget/LiNEAR.Modal.ConfirmInstantUnstake"
