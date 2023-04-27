@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
-    "dev": "bos-loader linear-builder.testnet --path src && https://test.near.org/linear-builder.testnet/widget/LiNEAR"
+    "start:testnet": "open https://test.near.org/linear-builder.testnet/widget/LiNEAR",
+    "dev": "yarn start:testnet && bos-loader linear-builder.testnet --path src"
   },
   "repository": {
     "type": "git",
