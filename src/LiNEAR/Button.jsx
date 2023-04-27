@@ -1,4 +1,4 @@
-const LinearButton = styled.button`
+const PrimaryButton = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -37,8 +37,43 @@ const LinearButton = styled.button`
     }
 `;
 
-return (
-  <LinearButton disabled={props.disabled} onClick={props.onClick}>
-    {props.text}
-  </LinearButton>
-);
+const OutlineButton = styled.button`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #30348a;
+    color: #30348a;
+    width: 100%;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    overflow: hidden;
+    padding: 8px 0;
+    transition: all 0.3s ease-in-out;
+
+    &:disabled {
+      background: #1C2056;
+      color: #3D47D6;
+    }
+    &:hover {
+      border: 2px solid #404be2;
+      color: white;
+      background: #404be2;
+    }
+`;
+
+const type = props.type || "primary"; // primary || outline
+
+if (type === "outline") {
+  return (
+    <OutlineButton disabled={props.disabled} onClick={props.onClick}>
+      {props.text}
+    </OutlineButton>
+  );
+} else {
+  return (
+    <PrimaryButton disabled={props.disabled} onClick={props.onClick}>
+      {props.text}
+    </PrimaryButton>
+  );
+}
