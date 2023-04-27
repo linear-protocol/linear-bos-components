@@ -1,0 +1,40 @@
+{
+  "name": "linear-bos-components",
+  "version": "0.0.1",
+  "description": "LiNEAR BOS Components",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install",
+    "start:testnet": "open https://test.near.org/linear-builder.testnet/widget/LiNEAR",
+    "dev": "yarn start:testnet && bos-loader linear-builder.testnet --path src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linear-protocol/linear-bos-components.git"
+  },
+  "keywords": [
+    "linear",
+    "bos",
+    "component"
+  ],
+  "author": "LiNEAR Protocol",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/linear-protocol/linear-bos-components/issues"
+  },
+  "homepage": "https://github.com/linear-protocol/linear-bos-components#readme",
+  "engines": {
+    "node": ">=14"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": false,
+    "trailingComma": "es5"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
+    "prettier": "^2.8.8"
+  }
+}

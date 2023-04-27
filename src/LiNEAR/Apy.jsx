@@ -10,12 +10,12 @@ function getAPY() {
 const apy = getAPY();
 
 const APYContainer = styled.div`
-    font-size: 20px;
-    margin: 12px 0;
-    span {
-        margin-left: 12px;
-        font-weight: bold;
-    }
+  font-size: 20px;
+  margin: 12px 0;
+  span {
+    margin-left: 12px;
+    font-weight: bold;
+  }
 `;
 
 return (

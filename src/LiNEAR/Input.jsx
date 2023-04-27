@@ -1,29 +1,29 @@
 const InputWrapper = styled.div`
-    width: 100%;
-    border-radius: 10px;
-    background: #0d0d2b;
-    padding: 20px;
-    color: white;
+  width: 100%;
+  border-radius: 10px;
+  background: #0d0d2b;
+  padding: 20px;
+  color: white;
 `;
 
 const HorizentalLine = styled.hr`
-      height: 1px;
-      border: none;
-      background: white;
-      opacity: 0.1;
-      margin-top: 16px;
-      margin-bottom: 8px;
-  `;
+  height: 1px;
+  border: none;
+  background: white;
+  opacity: 0.1;
+  margin-top: 16px;
+  margin-bottom: 8px;
+`;
 
 const BalanceContainer = styled.div`
-      color: #c1c1c1;
-      font-size: 14px;
-      display: flex;
-      justify-content: space-between;
-      .error {
-          color: #ec6868;
-      }
-  `;
+  color: #c1c1c1;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  .error {
+    color: #ec6868;
+  }
+`;
 
 const NEARInputContainer = styled.div`
   display: flex;
@@ -43,7 +43,7 @@ const LogoWithText = styled.div`
 
 const MaxTexture = styled.div`
   font-size: 24px;
-  color: #4451FD;
+  color: #4451fd;
   cursor: pointer;
 `;
 

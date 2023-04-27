@@ -193,7 +193,7 @@ const UnstakeTabWrapper = styled.div`
 const UnstakeTab = styled.div`
   background: ${(props) => (props.select ? "#232363" : "transparent")};
   border: 2px solid #4f4fa7;
-  border-radius:13px;
+  border-radius: 13px;
   padding: 20px;
   cursor: pointer;
 `;

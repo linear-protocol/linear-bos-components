@@ -196,11 +196,11 @@ const youWillReceive = (
 ).toFixed(5, BIG_ROUND_DOWN);
 
 const StakeFormWrapper = styled.div`
-    width: 100%;
-    max-width: 500px;
-    padding: 20px;
-    background: #0f0f31;
-    border-radius: 10px;
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  background: #0f0f31;
+  border-radius: 10px;
 `;
 
 return (

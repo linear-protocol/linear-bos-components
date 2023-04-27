@@ -48,7 +48,7 @@ const Main = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  `;
+`;
 
 const updateTabName = (tabName) =>
   State.update({
