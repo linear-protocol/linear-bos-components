@@ -59,13 +59,26 @@ const ButtonGroup = styled.div`
   gap: 20px;
 `;
 
+const Hr = styled.hr`
+  background: #6a74f8;
+  border: 0;
+  height: 1px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+`;
+
+const Slippage = styled.div`
+  color: #6a74f8;
+  font-size: 12px;
+`;
+
 return (
   <ModalWrapper>
     <ModalContent>
       <ModalTitle>Start Instant Unstake</ModalTitle>
       <ModalSubTitle>Funds will be available right now.</ModalSubTitle>
       <ReciveContent>
-        {"You'll receive: 0"}
+        <p>{`You'll receive: ${props.youWillReceive}`}</p>
         <NEARIcon />
       </ReciveContent>
       <ButtonGroup>
@@ -85,6 +98,8 @@ return (
           }}
         />
       </ButtonGroup>
+      <Hr />
+      <Slippage>Slippage: 0.05%</Slippage>
     </ModalContent>
   </ModalWrapper>
 );
