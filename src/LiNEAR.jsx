@@ -89,109 +89,114 @@ const youWillReceive = (
 ).toFixed(5, BIG_ROUND_DOWN);
 
 const Title = styled.h1`
-      font-size: 40px;
-      font-weight: bold;
-  `;
+  font-size: 40px;
+  font-weight: bold;
+`;
 
 const Main = styled.div`
-      color: white;
-      width: 100%;
-      height: 80vh;
-      background: #09071f;
-      padding: 20px;
-  
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column
-  `;
+  color: white;
+  width: 100%;
+  height: 80vh;
+  background: #09071f;
+  padding: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
 
 const Description = styled.div`
-      font-size: 14px;
-      color: #999999;
-      margin-top: 5px;
-  `;
+  font-size: 14px;
+  color: #999999;
+  margin-top: 5px;
+`;
 
 const StakeFormWrapper = styled.div`
-      width: 100%;
-      max-width: 500px;
-      padding: 8px 20px;
-      background: #0f0f31;
-      border-radius: 10px;
-  `;
+  width: 100%;
+  max-width: 500px;
+  padding: 8px 20px;
+  background: #0f0f31;
+  border-radius: 10px;
+`;
 
 const disabledStakeButton =
   !isValid(state.inputValue) || Big(state.inputValue).eq(0) || state.inputError;
 const StakeButton = styled.button`
-      border: none;
-      color: white;
-      width: 100%;
-      border-radius: 10px;
-      font-size: 20px;
-      font-weight: bold;
-      overflow: hidden;
-      padding: 8px 0;
-  
-      background-size: 100%;
-      background-image: linear-gradient(180deg, #5561ff 0%, #3643fc 100%, #3643fc 100%);
-      position: relative;
-      z-index: 0;
-      &:disabled {
-          background: #1C2056;
-          color: #3D47D6;
-      }
-      &:before {
-          background-image: linear-gradient(180deg, #4954f2 0%, #2029a7 100%);
-          content: "";
-          display: block;
-          height: 100%;
-          position: absolute;
-          top: 0;
-          left: 0;
-          opacity: 0;
-          width: 100%;
-          z-index: -100;
-          transition: opacity 0.6s;
-      }
-      &:hover:before {
-          opacity: ${disabledStakeButton ? "0" : "1"};
-      }
-  `;
+  border: none;
+  color: white;
+  width: 100%;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  overflow: hidden;
+  padding: 8px 0;
+
+  background-size: 100%;
+  background-image: linear-gradient(
+    180deg,
+    #5561ff 0%,
+    #3643fc 100%,
+    #3643fc 100%
+  );
+  position: relative;
+  z-index: 0;
+  &:disabled {
+    background: #1c2056;
+    color: #3d47d6;
+  }
+  &:before {
+    background-image: linear-gradient(180deg, #4954f2 0%, #2029a7 100%);
+    content: "";
+    display: block;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100%;
+    z-index: -100;
+    transition: opacity 0.6s;
+  }
+  &:hover:before {
+    opacity: ${disabledStakeButton ? "0" : "1"};
+  }
+`;
 
 const InputWrapper = styled.div`
-      width: 100%;
-      border-radius: 10px;
-      background: #0d0d2b;
-      padding: 20px;
-  `;
+  width: 100%;
+  border-radius: 10px;
+  background: #0d0d2b;
+  padding: 20px;
+`;
 
 const HorizentalLine = styled.hr`
-      height: 1px;
-      border: none;
-      background: white;
-      opacity: 0.1;
-      margin-top: 16px;
-      margin-bottom: 8px;
-  `;
+  height: 1px;
+  border: none;
+  background: white;
+  opacity: 0.1;
+  margin-top: 16px;
+  margin-bottom: 8px;
+`;
 
 const BalanceContainer = styled.div`
-      color: #c1c1c1;
-      font-size: 14px;
-      display: flex;
-      justify-content: space-between;
-      .error {
-          color: #ec6868;
-      }
-  `;
+  color: #c1c1c1;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  .error {
+    color: #ec6868;
+  }
+`;
 
 const APYContainer = styled.div`
-      font-size: 20px;
-      margin: 12px 0;
-      span {
-          margin-left: 12px;
-          font-weight: bold;
-      }
-  `;
+  font-size: 20px;
+  margin: 12px 0;
+  span {
+    margin-left: 12px;
+    font-weight: bold;
+  }
+`;
 
 const NEARInputContainer = styled.div`
   display: flex;
@@ -211,24 +216,24 @@ const LogoWithText = styled.div`
 
 const MaxTexture = styled.div`
   font-size: 24px;
-  color: #4451FD;
+  color: #4451fd;
   cursor: pointer;
 `;
 
 const FooterLink = styled.a`
-    color: #4451FD;
-    text-decoration: underline;
-    transition: all 0.2s ease-in-out;
-    margin-top: 12px;
-    text-underline-offset: 3px;
+  color: #4451fd;
+  text-decoration: underline;
+  transition: all 0.2s ease-in-out;
+  margin-top: 12px;
+  text-underline-offset: 3px;
 `;
 
 const YouWillReceive = styled.div`
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 
-    font-size: 14px;
-    margin-top: 16px;
+  font-size: 14px;
+  margin-top: 16px;
 `;
 
 return (
