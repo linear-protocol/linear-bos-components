@@ -37,16 +37,17 @@ State.init({
 });
 
 const Main = styled.div`
-      color: white;
-      width: 100%;
-      height: 80vh;
-      background: #09071f;
-      padding: 20px;
-  
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column
+  position: relative;
+  color: white;
+  width: 100%;
+  height: 80vh;
+  background: #09071f;
+  padding: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   `;
 
 const updateTabName = (tabName) =>
