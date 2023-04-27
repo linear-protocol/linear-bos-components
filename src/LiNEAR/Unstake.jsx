@@ -3,6 +3,8 @@ State.init({
   inputValue: "",
   inputError: "",
   unstakeType: "instant", // instant | delayed
+  showConfirmInstantUnstake: false,
+  showConfirmDelayedUnstake: false,
 });
 /** state init end */
 
@@ -222,67 +224,6 @@ const UnstakeFee = styled.div`
   color: #899cce;
 `;
 
-const ModalWrapper = styled.div`
-  position: absolute;
-  z-index: 99999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-
-  background: #000000aa;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ModalContent = styled.div`
-  width: 530px;
-  padding: 30px;
-  border-radius: 20px;
-  background: #090723;
-
-  color: white;
-`;
-
-const ModalTitle = styled.div`
-  font-size: 18px;
-  font-weight: bold;
-`;
-
-const ModalSubTitle = styled.div`
-  margin-top: 24px;
-  margin-bottom: 20px;
-  font-size: 14px;
-`;
-
-const ReciveContent = styled.div`
-  background: #131332;
-  border-radius: 6px;
-  padding: 16px 24px;
-
-  font-size: 16px;
-
-  margin-bottom: 20px;
-`;
-
-const NEARIcon = () => (
-  <img
-    style={{ marginLeft: "8px" }}
-    src="https://ipfs.near.social/ipfs/bafkreid5xjykpqdvinmj432ldrkbjisrp3m4n25n4xefd32eml674ypqly"
-    width={24}
-    height={24}
-    alt="Near Icon"
-  />
-);
-
-const ButtonGroup = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-`;
-
 return (
   <StakeFormWrapper>
     <Widget
@@ -302,7 +243,13 @@ return (
     <Widget
       src="linear-builder.testnet/widget/LiNEAR.Button"
       props={{
-        onClick: onClickUnstake,
+        onClick: () => {
+          if (state.unstakeType === "instant") {
+            State.update({ ...state, showConfirmInstantUnstake: true });
+          } else {
+            State.update({ ...state, showConfirmDelayedUnstake: true });
+          }
+        },
         disabled: disabledStakeButton,
         text: "Unstake",
       }}
@@ -329,32 +276,27 @@ return (
       src="linear-builder.testnet/widget/LiNEAR.Message.YouWillReceive"
       props={{ text: `${youWillReceive} NEAR` }}
     />
-    <ModalWrapper>
-      <ModalContent>
-        <ModalTitle>Start Instant Unstake</ModalTitle>
-        <ModalSubTitle>Funds will be available right now.</ModalSubTitle>
-        <ReciveContent>
-          {"You'll receive: 0"}
-          <NEARIcon />
-        </ReciveContent>
-        <ButtonGroup>
-          <Widget
-            src="linear-builder.testnet/widget/LiNEAR.Button"
-            props={{
-              onClick: props.onClickConfirm,
-              text: "Confirm",
-            }}
-          />
-          <Widget
-            src="linear-builder.testnet/widget/LiNEAR.Button"
-            props={{
-              onClick: props.onClickCancel,
-              text: "Cancel",
-              type: "outline",
-            }}
-          />
-        </ButtonGroup>
-      </ModalContent>
-    </ModalWrapper>
+    {state.showConfirmInstantUnstake && (
+      <Widget
+        src="linear-builder.testnet/widget/LiNEAR.Modal.ConfirmInstantUnstake"
+        props={{
+          youWillReceive,
+          onClickConfirm: onClickUnstake,
+          onClickCancel: () =>
+            State.update({ ...state, showConfirmInstantUnstake: false }),
+        }}
+      />
+    )}
+    {state.showConfirmDelayedUnstake && (
+      <Widget
+        src="linear-builder.testnet/widget/LiNEAR.Modal.ConfirmDelayedUnstake"
+        props={{
+          youWillReceive,
+          onClickConfirm: onClickUnstake,
+          onClickCancel: () =>
+            State.update({ ...state, showConfirmDelayedUnstake: false }),
+        }}
+      />
+    )}
   </StakeFormWrapper>
 );
