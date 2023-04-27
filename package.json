@@ -26,12 +26,6 @@
   "engines": {
     "node": ">=14"
   },
-  "eslintConfig": {
-    "extends": [
-      "eslint:recommended",
-      "plugin:react/recommended"
-    ]
-  },
   "prettier": {
     "printWidth": 80,
     "semi": true,
