@@ -4,7 +4,9 @@
   "description": "LiNEAR BOS Components",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install",
+    "dev": "bos-loader linear-builder.testnet --path src && https://test.near.org/linear-builder.testnet/widget/LiNEAR"
   },
   "repository": {
     "type": "git",
