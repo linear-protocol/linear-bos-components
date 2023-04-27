@@ -2,7 +2,6 @@
   "name": "linear-bos-components",
   "version": "0.0.1",
   "description": "LiNEAR BOS Components",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
