@@ -1,5 +1,6 @@
 /** state init start */
 State.init({
+  unstakeMax: false,
   inputValue: "",
   inputError: "",
   unstakeType: "instant", // instant | delayed
@@ -62,6 +63,7 @@ const onChange = (e) => {
   // Has user signed in?
   if (!isSignedIn) {
     State.update({
+      ...state,
       inputError: "Sign in please",
     });
     return;
@@ -90,11 +92,15 @@ const onChange = (e) => {
       Big(unstakeAmount).lt(1)
     ) {
       State.update({
+        ...state,
+        onClickMax: false,
         inputValue: unstakeAmount,
         inputError: `Stake at least ${nearPriceInLiNEAR} LiNEAR`,
       });
     } else {
       State.update({
+        ...state,
+        onClickMax: false,
         inputValue: unstakeAmount,
         inputError: `Max is ${linearBalance} LiNEAR`,
       });
@@ -114,12 +120,16 @@ const onClickMax = () => {
     Big(linearBalance).lt(nearPriceInLiNEAR)
   ) {
     State.update({
+      ...state,
+      unstakeMax: true,
       inputValue: linearBalance,
       inputError: `Stake at least ${nearPriceInLiNEAR} NEAR`,
     });
     return;
   } else {
     State.update({
+      ...state,
+      unstakeMax: true,
       inputValue: linearBalance,
       inputError: "",
     });
@@ -127,46 +137,23 @@ const onClickMax = () => {
 };
 
 const onClickUnstake = async () => {
-  // const stakeAmount = state.inputValue;
-  // if (
-  //   nearBalance &&
-  //   (isNaN(Number(stakeAmount)) ||
-  //     stakeAmount === "" ||
-  //     Big(stakeAmount).lt(1) ||
-  //     Big(stakeAmount).gt(Big(nearBalance)))
-  // ) {
-  //   if (
-  //     isNaN(Number(stakeAmount)) ||
-  //     stakeAmount === "" ||
-  //     Big(stakeAmount).lt(1)
-  //   ) {
-  //     State.update({ inputError: "Stake at least 1 NEAR" });
-  //   } else if (Big(stakeAmount).gt(Big(nearBalance))) {
-  //     State.update({
-  //       inputError: `Max is ${nearBalance} NEAR`,
-  //     });
-  //   } else setInputError("");
-  //   return;
-  // }
-  // Near.call(
-  //   config.contractId,
-  //   "deposit_and_stake",
-  //   {},
-  //   undefined,
-  //   Big(state.inputValue).mul(Big(10).pow(NEAR_DECIMALS)).toFixed(0)
-  // );
-  // // check and update balance
-  // const interval = setInterval(() => {
-  //   const balance = getNearBalance(accountId);
-  //   if (balance !== nearBalance) {
-  //     clearInterval(interval);
-  //     State.update({
-  //       inputValue: "",
-  //       inputError: "",
-  //       nearBalance: balance,
-  //     });
-  //   }
-  // }, 500);
+  const { inputValue, unstakeMax, unstakeType } = state;
+  const amount = Big(inputValue)
+    .times(linearPrice)
+    .times(Big(10).pow(LiNEAR_DECIMALS))
+    .toFixed(0);
+
+  if (unstakeType === "instant") {
+    // todos
+  } else {
+    if (unstakeMax) {
+      Near.call(config.contractId, "unstake_all", {});
+    } else {
+      Near.call(config.contractId, "unstake", {
+        amount,
+      });
+    }
+  }
 };
 /** events end */
 
