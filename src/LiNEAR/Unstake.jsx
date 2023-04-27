@@ -6,8 +6,7 @@ State.init({
   unstakeType: "instant", // instant | delayed
   showConfirmInstantUnstake: false,
   showConfirmDelayedUnstake: false,
-  refreshRefData: false,
-  receivedInstantUnstakeNear: "",
+  amountOut: "",
 });
 /** state init end */
 
@@ -73,7 +72,16 @@ function getReceivedDelayedUnstakeNear() {
   return _delayedUnstakeNear;
 }
 
+function getReceivedInstantUnstakeNear() {
+  const { inputValue, amountOut } = state;
+  if (!isValid(linearBalance) || !isValid(inputValue) || !isValid(amountOut)) {
+    return "-";
+  }
+  return Big(amountOut).toFixed(5);
+}
+
 const receivedDelayedUnstakeNear = getReceivedDelayedUnstakeNear();
+const receivedInstantUnstakeNear = getReceivedInstantUnstakeNear();
 
 /** events start */
 const onChange = (e) => {
@@ -228,19 +236,12 @@ return (
       <Widget
         src="linear-builder.testnet/widget/Ref.ref-swap-getEstimate"
         props={{
-          tokenIn: { id: "linear-protocol.near" },
-          tokenOut: { id: "wrap.near" },
+          tokenIn: { id: config.contractId },
+          tokenOut: { id: "NEAR" },
           amountIn: state.inputValue || 0,
-          reloadPools: state.refreshRefData,
-          setReloadPools: (value) => {
-            State.update({
-              refreshRefData: value,
-            });
-          },
           loadRes: (value) => {
             State.update({
-              // estimate: value,
-              receivedInstantUnstakeNear: value === null ? "" : value.estimate,
+              amountOut: value === null ? "" : value.estimate,
             });
           },
         }}
@@ -280,9 +281,7 @@ return (
         onClick={() => State.update({ ...state, unstakeType: "instant" })}
       >
         <UnstakeTabTitle>INSTANT UNSTAKE</UnstakeTabTitle>
-        <EstimateGetValue>
-          {state.receivedInstantUnstakeNear} NEAR
-        </EstimateGetValue>
+        <EstimateGetValue>{receivedInstantUnstakeNear} NEAR</EstimateGetValue>
         <UnstakeFee>Unstake fee: 0.05%</UnstakeFee>
       </UnstakeTab>
       <UnstakeTab

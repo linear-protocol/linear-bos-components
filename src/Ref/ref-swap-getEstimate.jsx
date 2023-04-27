@@ -7,6 +7,13 @@ const expandToken = (value, decimals) => {
   return new Big(value).mul(new Big(10).pow(decimals));
 };
 
+const REF_INDEXER_URL =
+  context.networkId === "mainnet"
+    ? "https://indexer.ref.finance/list-top-pools"
+    : "https://testnet-indexer.ref-finance.com/list-top-pools";
+const WNEAR_CONTRACT_ID =
+  context.networkId === "mainnet" ? "wrap.near" : "wrap.testnet";
+
 const {
   tokenIn: tokenInFromProps,
   tokenOut: tokenOutFromProps,
@@ -18,12 +25,12 @@ const {
 
 const tokenIn =
   tokenInFromProps.id === "NEAR"
-    ? { ...tokenInFromProps, id: "wrap.near" }
+    ? { ...tokenInFromProps, id: WNEAR_CONTRACT_ID }
     : tokenInFromProps;
 
 const tokenOut =
   tokenOutFromProps.id === "NEAR"
-    ? { ...tokenOutFromProps, id: "wrap.near" }
+    ? { ...tokenOutFromProps, id: WNEAR_CONTRACT_ID }
     : tokenOutFromProps;
 
 const FEE_DIVISOR = 10000;
@@ -66,7 +73,7 @@ const returnNull = (sig) => {
 };
 
 const wrapOperation =
-  [tokenIn, tokenOut].every((meta) => meta.id === "wrap.near") &&
+  [tokenIn, tokenOut].every((meta) => meta.id === WNEAR_CONTRACT_ID) &&
   !![tokenIn, tokenOut].find((meta) => meta.symbol === "NEAR");
 
 if (wrapOperation) {
@@ -82,12 +89,10 @@ if (wrapOperation) {
 
 if (tokenIn.id === tokenOut.id) return returnNull();
 
-let topPools = JSON.parse(
-  fetch("https://indexer.ref.finance/list-top-pools").body
-);
+let topPools = JSON.parse(fetch(REF_INDEXER_URL).body);
 
 const reloadTopPools = () => {
-  asyncFetch("https://indexer.ref.finance/list-top-pools").then((res) => {
+  asyncFetch(REF_INDEXER_URL).then((res) => {
     const data = res.body;
     topPools = JSON.parse(data);
     setReloadPools(false);

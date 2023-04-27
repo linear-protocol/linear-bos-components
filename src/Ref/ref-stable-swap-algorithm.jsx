@@ -3,7 +3,10 @@ const shrinkToken = (value, decimals) => {
   return new Big(value || 0).div(new Big(10).pow(decimals || 24)).toFixed();
 };
 
-const REF_FI_CONTRACT_ID = "v2.ref-finance.near";
+const REF_FI_CONTRACT_ID =
+  context.networkId === "mainnet"
+    ? "v2.ref-finance.near"
+    : "ref-finance-101.testnet";
 
 const FEE_DIVISOR = 10000;
 
