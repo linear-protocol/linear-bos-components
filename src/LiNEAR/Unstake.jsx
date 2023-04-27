@@ -6,6 +6,8 @@ State.init({
   unstakeType: "instant", // instant | delayed
   showConfirmInstantUnstake: false,
   showConfirmDelayedUnstake: false,
+  refreshRefData: false,
+  receivedInstantUnstakeNear: "",
 });
 /** state init end */
 
@@ -222,6 +224,28 @@ const UnstakeFee = styled.div`
 
 return (
   <StakeFormWrapper>
+    {
+      <Widget
+        src="linear-builder.testnet/widget/Ref.ref-swap-getEstimate"
+        props={{
+          tokenIn: { id: "linear-protocol.near" },
+          tokenOut: { id: "wrap.near" },
+          amountIn: state.inputValue || 0,
+          reloadPools: state.refreshRefData,
+          setReloadPools: (value) => {
+            State.update({
+              refreshRefData: value,
+            });
+          },
+          loadRes: (value) => {
+            State.update({
+              // estimate: value,
+              receivedInstantUnstakeNear: value === null ? "" : value.estimate,
+            });
+          },
+        }}
+      />
+    }
     <Widget
       src="linear-builder.testnet/widget/LiNEAR.Input"
       props={{
@@ -256,7 +280,9 @@ return (
         onClick={() => State.update({ ...state, unstakeType: "instant" })}
       >
         <UnstakeTabTitle>INSTANT UNSTAKE</UnstakeTabTitle>
-        <EstimateGetValue>- NEAR</EstimateGetValue>
+        <EstimateGetValue>
+          {state.receivedInstantUnstakeNear} NEAR
+        </EstimateGetValue>
         <UnstakeFee>Unstake fee: 0.05%</UnstakeFee>
       </UnstakeTab>
       <UnstakeTab
