@@ -52,12 +52,15 @@ return (
     <NEARInputContainer>
       <LogoWithText>
         <img
-          src={`https://ipfs.near.social/ipfs/bafkreid5xjykpqdvinmj432ldrkbjisrp3m4n25n4xefd32eml674ypqly`}
+          src={
+            props.iconUrl ||
+            `https://ipfs.near.social/ipfs/bafkreid5xjykpqdvinmj432ldrkbjisrp3m4n25n4xefd32eml674ypqly`
+          }
           width={26}
           height={26}
-          alt="NEAR Icon"
+          alt="Token Icon"
         />
-        <NEARTexture>NEAR</NEARTexture>
+        <NEARTexture>{props.iconName}</NEARTexture>
       </LogoWithText>
       <input
         style={{
@@ -83,7 +86,7 @@ return (
     </NEARInputContainer>
     <HorizentalLine />
     <BalanceContainer>
-      <p>Balance: {props.nearBalance} NEAR</p>
+      <p>Balance: {props.balance}</p>
       <p className="error">{props.inputError}</p>
     </BalanceContainer>
   </InputWrapper>
