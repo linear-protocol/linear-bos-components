@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
-    "dev": "bos-loader linear-builder.testnet --path src && https://test.near.org/linear-builder.testnet/widget/LiNEAR",
-    "fmt": "prettier --write '**/*.{js,jsx,ts,tsx,json}'"
+    "dev": "bos-loader linear-builder.testnet --path src && https://test.near.org/linear-builder.testnet/widget/LiNEAR"
   },
   "repository": {
     "type": "git",
