@@ -71,7 +71,7 @@ return (
       <Widget src="linear-builder.testnet/widget/LiNEAR.Stake" />
     )}
     {state.tabName === "unstake" && (
-      <Widget src="linear-builder.testnet/widget/LiNEAR.UnstakeForm" />
+      <Widget src="linear-builder.testnet/widget/LiNEAR.Unstake" />
     )}
   </Main>
 );
