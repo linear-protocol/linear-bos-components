@@ -1,6 +1,6 @@
 const ModalWrapper = styled.div`
   position: absolute;
-  z-index: 99999;
+  z-index: 1000;
   left: 0;
   top: 0;
   width: 100%;
