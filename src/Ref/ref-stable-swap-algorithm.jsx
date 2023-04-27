@@ -1,9 +1,9 @@
-// Forked from: weige.near/widget/ref-swap
+// Forked from: weige.near/widget/ref-stable-swap-algorithm
 const shrinkToken = (value, decimals) => {
   return new Big(value || 0).div(new Big(10).pow(decimals || 24)).toFixed();
 };
 
-const REF_FI_CONTRACT_ID =
+const REF_EXCHANGE_CONTRACT_ID =
   context.networkId === "mainnet"
     ? "v2.ref-finance.near"
     : "ref-finance-101.testnet";
@@ -162,7 +162,7 @@ const getSwappedAmount = (
 
 const getStablePoolDetail = (pool_id, pool_kind) => {
   if (pool_kind === "RATED_SWAP") {
-    const pool_info = Near.view(REF_FI_CONTRACT_ID, "get_rated_pool", {
+    const pool_info = Near.view(REF_EXCHANGE_CONTRACT_ID, "get_rated_pool", {
       pool_id: Number(pool_id),
     });
 
@@ -171,7 +171,7 @@ const getStablePoolDetail = (pool_id, pool_kind) => {
       id: pool_id,
     };
   } else {
-    const pool_info = Near.view(REF_FI_CONTRACT_ID, "get_stable_pool", {
+    const pool_info = Near.view(REF_EXCHANGE_CONTRACT_ID, "get_stable_pool", {
       pool_id: Number(pool_id),
     });
 

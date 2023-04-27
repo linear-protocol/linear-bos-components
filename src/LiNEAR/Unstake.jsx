@@ -6,7 +6,8 @@ State.init({
   unstakeType: "instant", // instant | delayed
   showConfirmInstantUnstake: false,
   showConfirmDelayedUnstake: false,
-  amountOut: "",
+  swapEstimate: {},
+  swapAmountOut: "",
 });
 /** state init end */
 
@@ -58,7 +59,9 @@ const linearBalance = getLinearBalance(accountId);
 const linearPrice = Big(
   Near.view(config.contractId, "ft_price", `{}`) ?? "0"
 ).div(Big(10).pow(24));
-const nearPriceInLiNEAR = Big(1).div(linearPrice).toFixed(5);
+const nearPriceInLiNEAR = linearPrice.eq(0)
+  ? "1"
+  : Big(1).div(linearPrice).toFixed(5);
 
 function getReceivedDelayedUnstakeNear() {
   const { unstakeMax, inputValue } = state;
@@ -73,11 +76,15 @@ function getReceivedDelayedUnstakeNear() {
 }
 
 function getReceivedInstantUnstakeNear() {
-  const { inputValue, amountOut } = state;
-  if (!isValid(linearBalance) || !isValid(inputValue) || !isValid(amountOut)) {
+  const { inputValue, swapAmountOut } = state;
+  if (
+    !isValid(linearBalance) ||
+    !isValid(inputValue) ||
+    !isValid(swapAmountOut)
+  ) {
     return "-";
   }
-  return Big(amountOut).toFixed(5);
+  return Big(swapAmountOut).toFixed(5);
 }
 
 const receivedDelayedUnstakeNear = getReceivedDelayedUnstakeNear();
@@ -162,14 +169,20 @@ const onClickMax = () => {
 };
 
 const onClickUnstake = async () => {
-  const { inputValue, unstakeMax, unstakeType } = state;
+  const { inputValue, unstakeMax, unstakeType, swapAmountOut } = state;
   const amount = Big(inputValue)
     .times(linearPrice)
     .times(Big(10).pow(LiNEAR_DECIMALS))
     .toFixed(0);
 
   if (unstakeType === "instant") {
-    // todos
+    callRefSwapTx(
+      TOKEN_LINEAR,
+      TOKEN_NEAR,
+      inputValue,
+      swapAmountOut,
+      SLIPPAGE_TOLERANCE
+    );
   } else {
     if (unstakeMax) {
       Near.call(config.contractId, "unstake_all", {});
@@ -180,6 +193,124 @@ const onClickUnstake = async () => {
     }
   }
 };
+
+// Ref swap constants and functions
+
+// token in and token out of swap
+const TOKEN_LINEAR = { id: config.contractId, decimals: LiNEAR_DECIMALS };
+const TOKEN_NEAR = { id: "NEAR", decimals: NEAR_DECIMALS };
+const SLIPPAGE_TOLERANCE = 0.05;
+
+const REF_EXCHANGE_CONTRACT_ID =
+  context.networkId === "mainnet"
+    ? "v2.ref-finance.near"
+    : "ref-finance-101.testnet";
+const WNEAR_CONTRACT_ID =
+  context.networkId === "mainnet" ? WNEAR_CONTRACT_ID : "wrap.testnet";
+
+// Forked from weige.near/widget/ref-swap
+const registered = Near.view(WNEAR_CONTRACT_ID, "storage_balance_of", {
+  account_id: accountId,
+});
+
+const expandToken = (value, decimals) => {
+  return new Big(value).mul(new Big(10).pow(decimals));
+};
+
+const callRefSwapTx = (
+  tokenIn,
+  tokenOut,
+  amountIn,
+  amountOut,
+  slippageTolerance
+) => {
+  const tx = [];
+
+  const nearDeposit = {
+    contractName: WNEAR_CONTRACT_ID,
+    methodName: "near_deposit",
+    deposit: expandToken(amountIn, 24).toFixed(),
+    gas: expandToken(50, 12),
+  };
+  const nearWithdraw = {
+    contractName: WNEAR_CONTRACT_ID,
+    methodName: "near_withdraw",
+    deposit: new Big("1").toFixed(),
+    args: {
+      amount: expandToken(amountIn, 24).toFixed(),
+    },
+  };
+
+  if (swapEstimate.pool === "wrap") {
+    if (tokenIn.id === "NEAR") {
+      tx.push(nearDeposit);
+    } else {
+      tx.push(nearWithdraw);
+    }
+
+    return Near.call(tx);
+  }
+
+  if (registered === null) {
+    tx.push({
+      contractName: tokenOut.id === "NEAR" ? WNEAR_CONTRACT_ID : tokenOut.id,
+      methodName: "storage_deposit",
+      deposit: expandToken(0.1, 24).toFixed(),
+      gas: expandToken(50, 12),
+      args: {
+        registration_only: true,
+        account_id: accountId,
+      },
+    });
+  }
+
+  if (tokenIn.id === "NEAR") {
+    tx.push(nearDeposit);
+  }
+
+  const minAmountOut = expandToken(
+    new Big(amountOut)
+      .mul(1 - Number(slippageTolerance) / 100)
+      .toFixed(tokenOut.decimals, 0),
+    tokenOut.decimals
+  ).toFixed();
+
+  tx.push({
+    methodName: "ft_transfer_call",
+    contractName: tokenIn.id === "NEAR" ? WNEAR_CONTRACT_ID : tokenIn.id,
+    gas: expandToken(180, 12),
+    deposit: new Big("1").toFixed(),
+    args: {
+      receiver_id: REF_EXCHANGE_CONTRACT_ID,
+      amount: expandToken(amountIn, tokenIn.decimals).toFixed(0, 0),
+      msg: JSON.stringify({
+        actions: [
+          {
+            pool_id: Number(swapEstimate.pool.id),
+            token_in: tokenIn.id === "NEAR" ? WNEAR_CONTRACT_ID : tokenIn.id,
+            token_out: tokenOut.id === "NEAR" ? WNEAR_CONTRACT_ID : tokenOut.id,
+            amount_in: expandToken(amountIn, tokenIn.decimals).toFixed(0, 0),
+            min_amount_out: minAmountOut,
+          },
+        ],
+      }),
+    },
+  });
+
+  if (tokenOut.id === "NEAR") {
+    tx.push({
+      contractName: WNEAR_CONTRACT_ID,
+      methodName: "near_withdraw",
+      deposit: new Big("1").toFixed(),
+      args: {
+        amount: minAmountOut,
+      },
+    });
+  }
+
+  Near.call(tx);
+};
+
 /** events end */
 
 const disabledStakeButton =
@@ -236,12 +367,13 @@ return (
       <Widget
         src="linear-builder.testnet/widget/Ref.ref-swap-getEstimate"
         props={{
-          tokenIn: { id: config.contractId },
-          tokenOut: { id: "NEAR" },
+          tokenIn: TOKEN_LINEAR,
+          tokenOut: TOKEN_NEAR,
           amountIn: state.inputValue || 0,
           loadRes: (value) => {
             State.update({
-              amountOut: value === null ? "" : value.estimate,
+              swapEstimate: value,
+              swapAmountOut: value === null ? "" : value.estimate,
             });
           },
         }}
@@ -297,7 +429,7 @@ return (
       <Widget
         src="linear-builder.testnet/widget/LiNEAR.Modal.ConfirmInstantUnstake"
         props={{
-          youWillReceive,
+          youWillReceive: receivedInstantUnstakeNear,
           onClickConfirm: onClickUnstake,
           onClickCancel: () =>
             State.update({ ...state, showConfirmInstantUnstake: false }),
