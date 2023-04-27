@@ -58,6 +58,21 @@ const linearPrice = Big(
   Near.view(config.contractId, "ft_price", `{}`) ?? "0"
 ).div(Big(10).pow(24));
 const nearPriceInLiNEAR = Big(1).div(linearPrice).toFixed(5);
+
+function getReceivedDelayedUnstakeNear() {
+  const { unstakeMax, inputValue } = state;
+  if (!isValid(linearBalance) || !isValid(inputValue)) {
+    return "-";
+  }
+  const delayedUnstakeLiNear = unstakeMax ? linearBalance : inputValue;
+  const _delayedUnstakeNear = Big(delayedUnstakeLiNear)
+    .times(linearPrice)
+    .toFixed(5);
+  return _delayedUnstakeNear;
+}
+
+const receivedDelayedUnstakeNear = getReceivedDelayedUnstakeNear();
+
 /** events start */
 const onChange = (e) => {
   // Has user signed in?
@@ -249,7 +264,7 @@ return (
         onClick={() => State.update({ ...state, unstakeType: "delayed" })}
       >
         <UnstakeTabTitle>DELAYED UNSTAKE ~2 DAYS</UnstakeTabTitle>
-        <EstimateGetValue>- NEAR</EstimateGetValue>
+        <EstimateGetValue>{receivedDelayedUnstakeNear} NEAR</EstimateGetValue>
         <UnstakeFee>Unstake fee: 0</UnstakeFee>
       </UnstakeTab>
     </UnstakeTabWrapper>
@@ -268,7 +283,7 @@ return (
       <Widget
         src="linear-builder.testnet/widget/LiNEAR.Modal.ConfirmDelayedUnstake"
         props={{
-          youWillReceive,
+          youWillReceive: receivedDelayedUnstakeNear,
           onClickConfirm: onClickUnstake,
           onClickCancel: () =>
             State.update({ ...state, showConfirmDelayedUnstake: false }),
