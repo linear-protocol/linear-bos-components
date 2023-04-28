@@ -5,6 +5,12 @@ State.init({
 });
 /** state init end */
 
+// load config
+const config = props.config;
+if (!config) {
+  return "Component not be loaded. Missing `config` props";
+}
+
 /** common lib start */
 const accountId = props.accountId || context.accountId;
 const isSignedIn = !!accountId;
@@ -18,25 +24,6 @@ function isValid(a) {
   return true;
 }
 
-function getConfig(network) {
-  switch (network) {
-    case "mainnet":
-      return {
-        contractId: "linear-protocol.near",
-        nodeUrl: "https://rpc.mainnet.near.org",
-        appUrl: "https://app.linearprotocol.org",
-      };
-    case "testnet":
-      return {
-        contractId: "linear-protocol.testnet",
-        nodeUrl: "https://rpc.testnet.near.org",
-        appUrl: "https://testnet.linearprotocol.org",
-      };
-    default:
-      throw Error(`Unconfigured environment '${network}'.`);
-  }
-}
-const config = getConfig(context.networkId);
 /** common lib end */
 function getNearBalance(accountId) {
   const account = fetch(config.nodeUrl, {
@@ -206,7 +193,7 @@ const StakeFormWrapper = styled.div`
 return (
   <StakeFormWrapper>
     <Widget
-      src="linear-builder.testnet/widget/LiNEAR.Input"
+      src={`${config.ownerId}/widget/LiNEAR.Input`}
       props={{
         placeholder: "NEAR amount to stake",
         value: state.inputValue,
@@ -220,7 +207,7 @@ return (
       }}
     />
     <Widget
-      src="linear-builder.testnet/widget/LiNEAR.Button"
+      src={`${config.ownerId}/widget/LiNEAR.Button`}
       props={{
         onClick: onClickStake,
         disabled: disabledStakeButton,
@@ -228,7 +215,7 @@ return (
       }}
     />
     <Widget
-      src="linear-builder.testnet/widget/LiNEAR.Message.YouWillReceive"
+      src={`${config.ownerId}/widget/LiNEAR.Message.YouWillReceive`}
       props={{ text: `${youWillReceive} LiNEAR` }}
     />
   </StakeFormWrapper>

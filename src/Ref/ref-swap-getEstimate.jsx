@@ -130,7 +130,7 @@ if (poolThisPair.pool_kind === "SIMPLE_POOL") {
 } else {
   return (
     <Widget
-      src="linear-builder.testnet/widget/Ref.ref-stable-swap-algorithm"
+      src={`${props.config.ownerId}/widget/Ref.ref-stable-swap-algorithm`}
       props={{
         loadRes: loadRes,
         tokenIn,

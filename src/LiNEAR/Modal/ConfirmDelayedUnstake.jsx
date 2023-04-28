@@ -72,6 +72,12 @@ const Slippage = styled.div`
   font-size: 12px;
 `;
 
+// load config
+const config = props.config;
+if (!config) {
+  return "Component not be loaded. Missing `config` props";
+}
+
 return (
   <ModalWrapper>
     <ModalContent>
@@ -86,14 +92,14 @@ return (
       </ReciveContent>
       <ButtonGroup>
         <Widget
-          src="linear-builder.testnet/widget/LiNEAR.Button"
+          src={`${config.ownerId}/widget/LiNEAR.Button`}
           props={{
             onClick: props.onClickConfirm,
             text: "Confirm",
           }}
         />
         <Widget
-          src="linear-builder.testnet/widget/LiNEAR.Button"
+          src={`${config.ownerId}/widget/LiNEAR.Button`}
           props={{
             onClick: props.onClickCancel,
             text: "Cancel",

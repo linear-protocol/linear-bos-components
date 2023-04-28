@@ -12,6 +12,12 @@ State.init({
 });
 /** state init end */
 
+// load config
+const config = props.config;
+if (!config) {
+  return "Component not be loaded. Missing `config` props";
+}
+
 /** common lib start */
 const accountId = props.accountId || context.accountId;
 const isSignedIn = !!accountId;
@@ -26,25 +32,6 @@ function isValid(a) {
   return true;
 }
 
-function getConfig(network) {
-  switch (network) {
-    case "mainnet":
-      return {
-        contractId: "linear-protocol.near",
-        nodeUrl: "https://rpc.mainnet.near.org",
-        appUrl: "https://app.linearprotocol.org",
-      };
-    case "testnet":
-      return {
-        contractId: "linear-protocol.testnet",
-        nodeUrl: "https://rpc.testnet.near.org",
-        appUrl: "https://testnet.linearprotocol.org",
-      };
-    default:
-      throw Error(`Unconfigured environment '${network}'.`);
-  }
-}
-const config = getConfig(context.networkId);
 /** common lib end */
 function getLinearBalance(accountId) {
   const linearBalanceRaw = Near.view(config.contractId, "ft_balance_of", {
@@ -243,7 +230,7 @@ const REF_EXCHANGE_CONTRACT_ID =
     ? "v2.ref-finance.near"
     : "ref-finance-101.testnet";
 const WNEAR_CONTRACT_ID =
-  context.networkId === "mainnet" ? WNEAR_CONTRACT_ID : "wrap.testnet";
+  context.networkId === "mainnet" ? "wrap.near" : "wrap.testnet";
 
 // Forked from weige.near/widget/ref-swap
 const registered = Near.view(WNEAR_CONTRACT_ID, "storage_balance_of", {
@@ -403,8 +390,9 @@ return (
   <StakeFormWrapper>
     <div style={{ display: "none" }}>
       <Widget
-        src="linear-builder.testnet/widget/Ref.ref-swap-getEstimate"
+        src={`${config.ownerId}/widget/Ref.ref-swap-getEstimate`}
         props={{
+          config,
           tokenIn: TOKEN_LINEAR,
           tokenOut: TOKEN_NEAR,
           amountIn: state.inputValue || 0,
@@ -419,7 +407,7 @@ return (
       />
     </div>
     <Widget
-      src="linear-builder.testnet/widget/LiNEAR.Input"
+      src={`${config.ownerId}/widget/LiNEAR.Input`}
       props={{
         placeholder: "LiNEAR amount to unstake",
         value: state.inputValue,
@@ -433,7 +421,7 @@ return (
       }}
     />
     <Widget
-      src="linear-builder.testnet/widget/LiNEAR.Button"
+      src={`${config.ownerId}/widget/LiNEAR.Button`}
       props={{
         onClick: () => {
           if (state.unstakeType === "instant") {
@@ -465,7 +453,7 @@ return (
         <UnstakeTabTitle>
           <p>INSTANT UNSTAKE</p>
           <Widget
-            src="linear-builder.testnet/widget/LiNEAR.Tooltip"
+            src={`${config.ownerId}/widget/LiNEAR.Tooltip`}
             props={{
               message:
                 "The slippage and fee of instant unstake is based on the LiNEAR/wNEAR StableSwap pool on Ref",
@@ -486,8 +474,9 @@ return (
     </UnstakeTabWrapper>
     {state.showConfirmInstantUnstake && (
       <Widget
-        src="linear-builder.testnet/widget/LiNEAR.Modal.ConfirmInstantUnstake"
+        src={`${config.ownerId}/widget/LiNEAR.Modal.ConfirmInstantUnstake`}
         props={{
+          config,
           youWillReceive: receivedInstantUnstakeNear,
           onClickConfirm: onClickUnstake,
           onClickCancel: () =>
@@ -497,8 +486,9 @@ return (
     )}
     {state.showConfirmDelayedUnstake && (
       <Widget
-        src="linear-builder.testnet/widget/LiNEAR.Modal.ConfirmDelayedUnstake"
+        src={`${config.ownerId}/widget/LiNEAR.Modal.ConfirmDelayedUnstake`}
         props={{
+          config,
           youWillReceive: receivedDelayedUnstakeNear,
           onClickConfirm: onClickUnstake,
           onClickCancel: () =>

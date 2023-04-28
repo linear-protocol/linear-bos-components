@@ -10,17 +10,21 @@ function isValid(a) {
   if (a === "") return false;
   return true;
 }
+/** common lib end */
 
+// Config for LiNEAR app
 function getConfig(network) {
   switch (network) {
     case "mainnet":
       return {
+        ownerId: "linearprotocol.near",
         contractId: "linear-protocol.near",
         nodeUrl: "https://rpc.mainnet.near.org",
         appUrl: "https://app.linearprotocol.org",
       };
     case "testnet":
       return {
+        ownerId: "linear-builder.testnet",
         contractId: "linear-protocol.testnet",
         nodeUrl: "https://rpc.testnet.near.org",
         appUrl: "https://testnet.linearprotocol.org",
@@ -30,7 +34,6 @@ function getConfig(network) {
   }
 }
 const config = getConfig(context.networkId);
-/** common lib end */
 
 State.init({
   tabName: "stake", // stake | unstake
@@ -62,25 +65,31 @@ if (state.page === "stake") {
   return (
     <Main>
       <Widget
-        src="linear-builder.testnet/widget/LiNEAR.Navigation"
+        src={`${config.ownerId}/widget/LiNEAR.Navigation`}
         props={{
           updatePage,
         }}
       />
-      <Widget src="linear-builder.testnet/widget/LiNEAR.TitleAndDescription" />
-      <Widget src="linear-builder.testnet/widget/LiNEAR.Apy" />
+      <Widget src={`${config.ownerId}/widget/LiNEAR.TitleAndDescription`} />
+      <Widget src={`${config.ownerId}/widget/LiNEAR.Apy`} />
       <Widget
-        src="linear-builder.testnet/widget/LiNEAR.Tab"
+        src={`${config.ownerId}/widget/LiNEAR.Tab`}
         props={{
           tabName: state.tabName,
           updateTabName,
         }}
       />
       {state.tabName === "stake" && (
-        <Widget src="linear-builder.testnet/widget/LiNEAR.Stake" />
+        <Widget
+          src={`${config.ownerId}/widget/LiNEAR.Stake`}
+          props={{ config }}
+        />
       )}
       {state.tabName === "unstake" && (
-        <Widget src="linear-builder.testnet/widget/LiNEAR.Unstake" />
+        <Widget
+          src={`${config.ownerId}/widget/LiNEAR.Unstake`}
+          props={{ config }}
+        />
       )}
     </Main>
   );
@@ -88,7 +97,7 @@ if (state.page === "stake") {
   return (
     <Main>
       <Widget
-        src="linear-builder.testnet/widget/LiNEAR.Navigation"
+        src={`${config.ownerId}/widget/LiNEAR.Navigation`}
         props={{
           updatePage,
         }}
