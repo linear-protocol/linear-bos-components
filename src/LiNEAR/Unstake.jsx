@@ -89,7 +89,21 @@ function getReceivedInstantUnstakeNear() {
 
 const receivedDelayedUnstakeNear = getReceivedDelayedUnstakeNear();
 const receivedInstantUnstakeNear = getReceivedInstantUnstakeNear();
-
+const UNSTAKE_DIFF_ERROR_RATIO = 0.05;
+if (
+  state.inputError === "" &&
+  isValid(receivedDelayedUnstakeNear) &&
+  isValid(receivedInstantUnstakeNear) &&
+  Big(receivedDelayedUnstakeNear)
+    .minus(receivedInstantUnstakeNear)
+    .div(receivedDelayedUnstakeNear)
+    .gt(UNSTAKE_DIFF_ERROR_RATIO)
+) {
+  State.update({
+    ...state,
+    inputError: "Price impact high. Unstake less or try later",
+  });
+}
 /** events start */
 const onChange = (e) => {
   // Has user signed in?
