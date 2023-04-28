@@ -90,8 +90,9 @@ function getReceivedInstantUnstakeNear() {
 const receivedDelayedUnstakeNear = getReceivedDelayedUnstakeNear();
 const receivedInstantUnstakeNear = getReceivedInstantUnstakeNear();
 const UNSTAKE_DIFF_ERROR_RATIO = 0.05;
+
 if (
-  state.inputError === "" &&
+  !state.inputError &&
   isValid(receivedDelayedUnstakeNear) &&
   isValid(receivedInstantUnstakeNear) &&
   Big(receivedDelayedUnstakeNear)
