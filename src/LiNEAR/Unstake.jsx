@@ -115,13 +115,13 @@ const onChange = (e) => {
     linearBalance &&
     (isNaN(Number(unstakeAmount)) ||
       unstakeAmount === "" ||
-      Big(unstakeAmount).lt(1) ||
+      Big(unstakeAmount).lt(nearPriceInLiNEAR) ||
       Big(unstakeAmount).gt(Big(linearBalance)))
   ) {
     if (
       isNaN(Number(unstakeAmount)) ||
       unstakeAmount === "" ||
-      Big(unstakeAmount).lt(1)
+      Big(unstakeAmount).lt(nearPriceInLiNEAR)
     ) {
       State.update({
         ...state,
