@@ -96,7 +96,7 @@ if (
   !state.inputError &&
   isValid(receivedDelayedUnstakeNear) &&
   isValid(receivedInstantUnstakeNear) &&
-  state.inputValue === state.swapAmountIn &&
+  state.inputValue === state.swapAmountIn && // compare received NEAR only if the input amounts matches
   Big(receivedDelayedUnstakeNear)
     .minus(receivedInstantUnstakeNear)
     .div(receivedDelayedUnstakeNear)
@@ -439,6 +439,7 @@ return (
           if (state.unstakeType === "instant") {
             if (
               state.swapAmountOut &&
+              // proceed with instant unstake only if the input amounts matches
               state.inputValue === state.swapAmountIn
             ) {
               State.update({ ...state, showConfirmInstantUnstake: true });
