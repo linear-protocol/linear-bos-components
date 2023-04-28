@@ -40,12 +40,12 @@ const Main = styled.div`
   position: relative;
   color: white;
   width: 100%;
-  height: 80vh;
+  height: 100vh;
   background: #09071f;
   padding: 20px;
+  padding-top: 100px;
 
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
 `;
