@@ -406,7 +406,6 @@ return (
           tokenOut: TOKEN_NEAR,
           amountIn: state.inputValue || 0,
           loadRes: (value) => {
-            console.log("estimate", value);
             State.update({
               swapEstimate: value,
               swapAmountOut: value === null ? "" : value.estimate,
