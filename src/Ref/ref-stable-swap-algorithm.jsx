@@ -196,6 +196,7 @@ if (!stablePool || !stablePool?.token_account_ids) {
   loadRes({
     tokenIn,
     tokenOut,
+    amountIn,
     estimate: null,
     pool,
   });
@@ -215,6 +216,7 @@ const res = getSwappedAmount(
 loadRes({
   tokenIn,
   tokenOut,
+  amountIn,
   estimate: res,
   pool,
 });

@@ -7,6 +7,7 @@ State.init({
   showConfirmInstantUnstake: false,
   showConfirmDelayedUnstake: false,
   swapEstimate: {},
+  swapAmountIn: "",
   swapAmountOut: "",
 });
 /** state init end */
@@ -95,6 +96,7 @@ if (
   !state.inputError &&
   isValid(receivedDelayedUnstakeNear) &&
   isValid(receivedInstantUnstakeNear) &&
+  state.inputValue === state.swapAmountIn &&
   Big(receivedDelayedUnstakeNear)
     .minus(receivedInstantUnstakeNear)
     .div(receivedDelayedUnstakeNear)
@@ -108,6 +110,7 @@ if (
   state.inputError === IMPACT_TOO_HIGH_ERROR &&
   isValid(receivedDelayedUnstakeNear) &&
   isValid(receivedInstantUnstakeNear) &&
+  state.inputValue === state.swapAmountIn &&
   Big(receivedDelayedUnstakeNear)
     .minus(receivedInstantUnstakeNear)
     .div(receivedDelayedUnstakeNear)
@@ -408,6 +411,7 @@ return (
           loadRes: (value) => {
             State.update({
               swapEstimate: value,
+              swapAmountIn: value === null ? "" : value.amountIn,
               swapAmountOut: value === null ? "" : value.estimate,
             });
           },
@@ -433,7 +437,17 @@ return (
       props={{
         onClick: () => {
           if (state.unstakeType === "instant") {
-            State.update({ ...state, showConfirmInstantUnstake: true });
+            if (
+              state.swapAmountOut &&
+              state.inputValue === state.swapAmountIn
+            ) {
+              State.update({ ...state, showConfirmInstantUnstake: true });
+            } else {
+              State.update({
+                inputError:
+                  "Instant unstake received NEAR estimation is loading. Please wait or try again.",
+              });
+            }
           } else {
             State.update({ ...state, showConfirmDelayedUnstake: true });
           }

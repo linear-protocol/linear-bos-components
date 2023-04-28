@@ -126,7 +126,7 @@ if (!poolThisPair || poolThisPair.amounts.some((a) => Number(a) === 0)) {
 if (poolThisPair.pool_kind === "SIMPLE_POOL") {
   const res = getSinglePoolEstimate(tokenIn, tokenOut, poolThisPair, amountIn);
 
-  loadRes(res);
+  loadRes({ ...res, amountIn });
 } else {
   return (
     <Widget
