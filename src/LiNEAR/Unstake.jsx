@@ -413,7 +413,16 @@ return (
         select={state.unstakeType === "instant"}
         onClick={() => State.update({ ...state, unstakeType: "instant" })}
       >
-        <UnstakeTabTitle>INSTANT UNSTAKE</UnstakeTabTitle>
+        <UnstakeTabTitle>
+          <p>INSTANT UNSTAKE</p>
+          <Widget
+            src="linear-builder.testnet/widget/LiNEAR.Tooltip"
+            props={{
+              message:
+                "The slippage and fee of instant unstake is based on the LiNEAR/wNEAR StableSwap pool on Ref",
+            }}
+          />
+        </UnstakeTabTitle>
         <EstimateGetValue>{receivedInstantUnstakeNear} NEAR</EstimateGetValue>
         <UnstakeFee>Unstake fee: 0.05%</UnstakeFee>
       </UnstakeTab>
