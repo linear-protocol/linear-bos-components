@@ -1,14 +1,13 @@
 {
-  "description": "LiNEAR Brand Logo",
+  "description": "LiNEAR Navigation",
   "image": {
     "ipfs_cid": "bafkreihszlp5bu7xe3pwn4x3xmhazcxjxo4d5gsnhr2a4kthnzn6fzhn5i"
   },
-  "name": "Brand Logo | LiNEAR",
+  "name": "Navigation | LiNEAR",
   "tags": {
     "linear": "",
     "widget": "",
     "component": "",
-    "logo": "",
-    "image": ""
+    "input": ""
   }
 }

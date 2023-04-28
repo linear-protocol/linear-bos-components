@@ -34,6 +34,7 @@ const config = getConfig(context.networkId);
 
 State.init({
   tabName: "stake", // stake | unstake
+  page: "stake", // "stake" | "account"
 });
 
 const Main = styled.div`
@@ -43,7 +44,6 @@ const Main = styled.div`
   height: 100vh;
   background: #09071f;
   padding: 20px;
-  padding-top: 100px;
 
   display: flex;
   align-items: center;
@@ -56,23 +56,44 @@ const updateTabName = (tabName) =>
     tabName,
   });
 
-return (
-  <Main>
-    <Widget src="linear-builder.testnet/widget/LiNEAR.BrandLogo" />
-    <Widget src="linear-builder.testnet/widget/LiNEAR.TitleAndDescription" />
-    <Widget src="linear-builder.testnet/widget/LiNEAR.Apy" />
-    <Widget
-      src="linear-builder.testnet/widget/LiNEAR.Tab"
-      props={{
-        tabName: state.tabName,
-        updateTabName,
-      }}
-    />
-    {state.tabName === "stake" && (
-      <Widget src="linear-builder.testnet/widget/LiNEAR.Stake" />
-    )}
-    {state.tabName === "unstake" && (
-      <Widget src="linear-builder.testnet/widget/LiNEAR.Unstake" />
-    )}
-  </Main>
-);
+const updatePage = (pageName) => State.update({ ...state, page: pageName });
+
+if (state.page === "stake") {
+  return (
+    <Main>
+      <Widget
+        src="linear-builder.testnet/widget/LiNEAR.Navigation"
+        props={{
+          updatePage,
+        }}
+      />
+      <Widget src="linear-builder.testnet/widget/LiNEAR.TitleAndDescription" />
+      <Widget src="linear-builder.testnet/widget/LiNEAR.Apy" />
+      <Widget
+        src="linear-builder.testnet/widget/LiNEAR.Tab"
+        props={{
+          tabName: state.tabName,
+          updateTabName,
+        }}
+      />
+      {state.tabName === "stake" && (
+        <Widget src="linear-builder.testnet/widget/LiNEAR.Stake" />
+      )}
+      {state.tabName === "unstake" && (
+        <Widget src="linear-builder.testnet/widget/LiNEAR.Unstake" />
+      )}
+    </Main>
+  );
+} else {
+  return (
+    <Main>
+      <Widget
+        src="linear-builder.testnet/widget/LiNEAR.Navigation"
+        props={{
+          updatePage,
+        }}
+      />
+      {/**TODOS, new pr later */}
+    </Main>
+  );
+}
