@@ -87,7 +87,7 @@ return (
         rewards during that period.
       </ModalSubTitle>
       <ReciveContent>
-        <p>{`Start delayed-unstake process for: ${props.youWillReceive}`}</p>
+        <p>{`Start delayed unstake process for: ${props.youWillReceive}`}</p>
         <NEARIcon />
       </ReciveContent>
       <ButtonGroup>
