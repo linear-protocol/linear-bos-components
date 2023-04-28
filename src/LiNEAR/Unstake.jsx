@@ -90,7 +90,7 @@ function getReceivedInstantUnstakeNear() {
 const receivedDelayedUnstakeNear = getReceivedDelayedUnstakeNear();
 const receivedInstantUnstakeNear = getReceivedInstantUnstakeNear();
 const UNSTAKE_DIFF_ERROR_RATIO = 0.05;
-
+const IMPACT_TOO_HIGH_ERROR = "Price impact high. Unstake less or try later";
 if (
   !state.inputError &&
   isValid(receivedDelayedUnstakeNear) &&
@@ -102,9 +102,23 @@ if (
 ) {
   State.update({
     ...state,
-    inputError: "Price impact high. Unstake less or try later",
+    inputError: IMPACT_TOO_HIGH_ERROR,
+  });
+} else if (
+  state.inputError === IMPACT_TOO_HIGH_ERROR &&
+  isValid(receivedDelayedUnstakeNear) &&
+  isValid(receivedInstantUnstakeNear) &&
+  Big(receivedDelayedUnstakeNear)
+    .minus(receivedInstantUnstakeNear)
+    .div(receivedDelayedUnstakeNear)
+    .lte(UNSTAKE_DIFF_ERROR_RATIO)
+) {
+  State.update({
+    ...state,
+    inputError: "",
   });
 }
+
 /** events start */
 const onChange = (e) => {
   // Has user signed in?
@@ -379,7 +393,7 @@ const UnstakeFee = styled.div`
 
 return (
   <StakeFormWrapper>
-    {
+    <div style={{ display: "none" }}>
       <Widget
         src="linear-builder.testnet/widget/Ref.ref-swap-getEstimate"
         props={{
@@ -395,7 +409,7 @@ return (
           },
         }}
       />
-    }
+    </div>
     <Widget
       src="linear-builder.testnet/widget/LiNEAR.Input"
       props={{
