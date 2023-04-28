@@ -241,7 +241,7 @@ const callRefSwapTx = (
     },
   };
 
-  if (swapEstimate.pool === "wrap") {
+  if (state.swapEstimate.pool === "wrap") {
     if (tokenIn.id === "NEAR") {
       tx.push(nearDeposit);
     } else {
@@ -286,7 +286,7 @@ const callRefSwapTx = (
       msg: JSON.stringify({
         actions: [
           {
-            pool_id: Number(swapEstimate.pool.id),
+            pool_id: Number(state.swapEstimate.pool.id),
             token_in: tokenIn.id === "NEAR" ? WNEAR_CONTRACT_ID : tokenIn.id,
             token_out: tokenOut.id === "NEAR" ? WNEAR_CONTRACT_ID : tokenOut.id,
             amount_in: expandToken(amountIn, tokenIn.decimals).toFixed(0, 0),
@@ -371,6 +371,7 @@ return (
           tokenOut: TOKEN_NEAR,
           amountIn: state.inputValue || 0,
           loadRes: (value) => {
+            console.log("estimate", value);
             State.update({
               swapEstimate: value,
               swapAmountOut: value === null ? "" : value.estimate,
