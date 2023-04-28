@@ -125,6 +125,7 @@ const onChange = (e) => {
   if (!isSignedIn) {
     State.update({
       ...state,
+      unstakeMax: false,
       inputError: "Sign in please",
     });
     return;
@@ -154,6 +155,7 @@ const onChange = (e) => {
     ) {
       State.update({
         ...state,
+        unstakeMax: false,
         onClickMax: false,
         inputValue: unstakeAmount,
         inputError: `Stake at least ${nearPriceInLiNEAR} LiNEAR`,
@@ -161,6 +163,7 @@ const onChange = (e) => {
     } else {
       State.update({
         ...state,
+        unstakeMax: false,
         onClickMax: false,
         inputValue: unstakeAmount,
         inputError: `Max is ${linearBalance} LiNEAR`,
@@ -169,6 +172,8 @@ const onChange = (e) => {
     return;
   }
   State.update({
+    ...state,
+    unstakeMax: false,
     inputValue: unstakeAmount,
     inputError: "",
   });
