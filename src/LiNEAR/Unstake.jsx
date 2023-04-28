@@ -346,6 +346,7 @@ const UnstakeTabTitle = styled.div`
   font-weight: bold;
   display: flex;
   justify-content: space-between;
+  height: 16px;
 `;
 
 const EstimateGetValue = styled.div`

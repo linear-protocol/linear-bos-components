@@ -39,7 +39,7 @@ const ReciveContent = styled.div`
   padding: 16px 24px;
 
   font-size: 16px;
-
+  display: flex;
   margin-bottom: 20px;
 `;
 
