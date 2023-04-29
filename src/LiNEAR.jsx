@@ -55,11 +55,10 @@ const Main = styled.div`
 
 const updateTabName = (tabName) =>
   State.update({
-    ...state,
     tabName,
   });
 
-const updatePage = (pageName) => State.update({ ...state, page: pageName });
+const updatePage = (pageName) => State.update({ page: pageName });
 
 if (state.page === "stake") {
   return (
