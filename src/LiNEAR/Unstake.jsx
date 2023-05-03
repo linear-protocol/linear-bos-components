@@ -153,7 +153,7 @@ const onChange = (e) => {
         unstakeMax: false,
         onClickMax: false,
         inputValue: unstakeAmount,
-        inputError: `Max is ${linearBalance} LiNEAR`,
+        inputError: `Max is ${formattedLinearBalance} LiNEAR`,
       });
     }
     return;
