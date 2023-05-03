@@ -39,17 +39,19 @@ function getLinearBalance(accountId) {
   });
   if (!linearBalanceRaw) return "-";
   const balance = Big(linearBalanceRaw).div(Big(10).pow(LiNEAR_DECIMALS));
-  return balance.lt(0) ? "0" : balance.toFixed(5, BIG_ROUND_DOWN);
+  return balance.lt(0) ? "0" : balance.toFixed();
 }
 
 const linearBalance = getLinearBalance(accountId);
+const formattedLinearBalance =
+  linearBalance === "-" ? "-" : Big(linearBalance).toFixed(5, BIG_ROUND_DOWN);
 
 const linearPrice = Big(
   Near.view(config.contractId, "ft_price", `{}`) ?? "0"
 ).div(Big(10).pow(24));
 const nearPriceInLiNEAR = linearPrice.eq(0)
   ? "1"
-  : Big(1).div(linearPrice).toFixed(5);
+  : Big(1).div(linearPrice).toFixed(5, BIG_ROUND_DOWN);
 
 function getReceivedDelayedUnstakeNear() {
   const { unstakeMax, inputValue } = state;
@@ -171,14 +173,14 @@ const onClickMax = () => {
   ) {
     State.update({
       unstakeMax: true,
-      inputValue: linearBalance,
+      inputValue: formattedLinearBalance,
       inputError: `Stake at least ${nearPriceInLiNEAR} NEAR`,
     });
     return;
   } else {
     State.update({
       unstakeMax: true,
-      inputValue: linearBalance,
+      inputValue: formattedLinearBalance,
       inputError: "",
     });
   }
@@ -406,7 +408,7 @@ return (
         onChange,
         onClickMax,
         inputError: state.inputError,
-        balance: `${linearBalance} LiNEAR`,
+        balance: `${formattedLinearBalance} LiNEAR`,
         iconName: "LiNEAR",
         iconUrl:
           "https://ipfs.near.social/ipfs/bafkreie2nqrjdjka3ckf4doocsrip5hwqrxh37jzwul2nyzeg3badfl2pm",
