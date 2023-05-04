@@ -1,15 +1,20 @@
+const type = props.type || "primary"; // primary || outline
+const size = props.size || "lg"; // lg || base
+const full = props.full || "full"; // full || none
+const padding = props.padding || "normal"; // normal || large
+
 const PrimaryButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
   border: none;
   color: white;
-  width: 100%;
+  ${full === "full" && "width: 100%;"}
   border-radius: 10px;
-  font-size: 20px;
+  font-size: ${size === "lg" ? "20px" : "16px"};
   font-weight: bold;
   overflow: hidden;
-  padding: 8px 0;
+  padding: ${padding === "normal" ? "8px 0" : "12px 24px"};
 
   background-size: 100%;
   background-image: linear-gradient(
@@ -48,12 +53,12 @@ const OutlineButton = styled.button`
   align-items: center;
   border: 2px solid #30348a;
   color: #30348a;
-  width: 100%;
+  ${full === "full" && "width: 100%;"}
   border-radius: 10px;
-  font-size: 20px;
+  font-size: ${size === "lg" ? "20px" : "16px"};
   font-weight: bold;
   overflow: hidden;
-  padding: 8px 0;
+  padding: ${padding === "normal" ? "8px 0" : "12px 24px"};
   transition: all 0.3s ease-in-out;
 
   &:disabled {
@@ -66,9 +71,6 @@ const OutlineButton = styled.button`
     background: #404be2;
   }
 `;
-
-const type = props.type || "primary"; // primary || outline
-
 if (type === "outline") {
   return (
     <OutlineButton disabled={props.disabled} onClick={props.onClick}>

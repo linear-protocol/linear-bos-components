@@ -94,14 +94,9 @@ if (state.page === "stake") {
   );
 } else {
   return (
-    <Main>
-      <Widget
-        src={`${config.ownerId}/widget/LiNEAR.Navigation`}
-        props={{
-          updatePage,
-        }}
-      />
-      {/**TODOS, new pr later */}
-    </Main>
+    <Widget
+      src={`${config.ownerId}/widget/LiNEAR.Account`}
+      props={{ updatePage, updateTabName }}
+    />
   );
 }

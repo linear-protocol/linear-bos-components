@@ -38,11 +38,11 @@ const BrandLogo = () => (
 return (
   <NavigationWrapper>
     <BrandLogo />
-    {/*<MenuItemWrapper>
+    <MenuItemWrapper>
       <MenuItem onClick={() => props.updatePage("stake")}>Stake</MenuItem>
       <MenuItem onClick={() => props.updatePage("account")}>
         My Account
       </MenuItem>
-    </MenuItemWrapper>*/}
+    </MenuItemWrapper>
   </NavigationWrapper>
 );
