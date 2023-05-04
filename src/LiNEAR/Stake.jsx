@@ -25,7 +25,12 @@ function isValid(a) {
 }
 
 function formatAmount(a) {
-  return isValid(a) ? Number(a).toLocaleString() : a;
+  return isValid(a)
+    ? Number(a).toLocaleString(null, {
+        minimumFractionDigits: 5,
+        maximumFractionDigits: 5,
+      })
+    : a;
 }
 
 /** common lib end */
