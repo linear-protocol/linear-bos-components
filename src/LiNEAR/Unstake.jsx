@@ -81,11 +81,16 @@ const receivedDelayedUnstakeNear = getReceivedDelayedUnstakeNear();
 const receivedInstantUnstakeNear = getReceivedInstantUnstakeNear();
 const UNSTAKE_DIFF_ERROR_RATIO = 0.05;
 const IMPACT_TOO_HIGH_ERROR = "Price impact high. Unstake less or try later";
-if (
-  !state.inputError &&
+const validReceivedUnstakeAmount =
   isValid(receivedDelayedUnstakeNear) &&
   isValid(receivedInstantUnstakeNear) &&
-  state.inputValue === state.swapAmountIn && // compare received NEAR only if the input amounts matches
+  receivedDelayedUnstakeNear > 0 &&
+  receivedInstantUnstakeNear > 0 &&
+  state.inputValue === state.swapAmountIn; // compare received NEAR only if the input amounts matches
+
+if (
+  !state.inputError &&
+  validReceivedUnstakeAmount &&
   Big(receivedDelayedUnstakeNear)
     .minus(receivedInstantUnstakeNear)
     .div(receivedDelayedUnstakeNear)
@@ -96,9 +101,7 @@ if (
   });
 } else if (
   state.inputError === IMPACT_TOO_HIGH_ERROR &&
-  isValid(receivedDelayedUnstakeNear) &&
-  isValid(receivedInstantUnstakeNear) &&
-  state.inputValue === state.swapAmountIn &&
+  validReceivedUnstakeAmount &&
   Big(receivedDelayedUnstakeNear)
     .minus(receivedInstantUnstakeNear)
     .div(receivedDelayedUnstakeNear)
