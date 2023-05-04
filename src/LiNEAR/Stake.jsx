@@ -25,36 +25,8 @@ function isValid(a) {
 }
 
 /** common lib end */
-function getNearBalance(accountId) {
-  const account = fetch(config.nodeUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      id: "dontcare",
-      method: "query",
-      params: {
-        request_type: "view_account",
-        finality: "final",
-        account_id: accountId,
-      },
-    }),
-  });
-  const { amount, storage_usage } = account.body.result;
-  const COMMON_MIN_BALANCE = 0.05;
-  if (!amount) return "-";
-  const availableBalance = Big(amount || 0).minus(
-    Big(storage_usage).mul(Big(10).pow(19))
-  );
-  const balance = availableBalance
-    .div(Big(10).pow(NEAR_DECIMALS))
-    .minus(COMMON_MIN_BALANCE);
-  return balance.lt(0) ? "0" : balance.toFixed(5, BIG_ROUND_DOWN);
-}
 
-const nearBalance = getNearBalance(accountId);
+const nearBalance = props.nearBalance;
 
 /** events start */
 const onChange = (e) => {

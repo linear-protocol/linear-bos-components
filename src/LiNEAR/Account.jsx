@@ -1,40 +1,3 @@
-/** common lib start */
-const accountId = props.accountId || context.accountId;
-const isSignedIn = !!accountId;
-const NEAR_DECIMALS = 24;
-const BIG_ROUND_DOWN = 0;
-
-function isValid(a) {
-  if (!a) return false;
-  if (isNaN(Number(a))) return false;
-  if (a === "") return false;
-  return true;
-}
-/** common lib end */
-
-// Config for LiNEAR app
-function getConfig(network) {
-  switch (network) {
-    case "mainnet":
-      return {
-        ownerId: "linearprotocol.near",
-        contractId: "linear-protocol.near",
-        nodeUrl: "https://rpc.mainnet.near.org",
-        appUrl: "https://app.linearprotocol.org",
-      };
-    case "testnet":
-      return {
-        ownerId: "linear-builder.testnet",
-        contractId: "linear-protocol.testnet",
-        nodeUrl: "https://rpc.testnet.near.org",
-        appUrl: "https://testnet.linearprotocol.org",
-      };
-    default:
-      throw Error(`Unconfigured environment '${network}'.`);
-  }
-}
-const config = getConfig(context.networkId);
-
 const MyAccountTitle = styled.h1`
   font-size: 40px;
   font-weight: bold;
@@ -95,7 +58,11 @@ const RewardsFinishedTime = styled.div`
   align-items: flex-end;
 `;
 
-const { updatePage, updateTabName } = props;
+const { updatePage, updateTabName, config, nearBalance, linearBalance } = props;
+if (!config) {
+  return "Component not be loaded. Missing `config` props";
+}
+
 return (
   <Main>
     <Widget src={`${config.ownerId}/widget/LiNEAR.Navigation`} />
@@ -104,7 +71,7 @@ return (
       <MyAccountCardWrapper>
         <div>
           <TokenValue>
-            <div>9.79920</div>
+            <div>{nearBalance}</div>
             <img
               src="https://ipfs.near.social/ipfs/bafkreid5xjykpqdvinmj432ldrkbjisrp3m4n25n4xefd32eml674ypqly"
               width={20}
@@ -133,7 +100,7 @@ return (
       <MyAccountCardWrapper style={{ marginTop: "10px" }}>
         <div>
           <TokenValue>
-            <div>9.79920</div>
+            <div>{linearBalance}</div>
             <img
               src="https://ipfs.near.social/ipfs/bafkreie2nqrjdjka3ckf4doocsrip5hwqrxh37jzwul2nyzeg3badfl2pm"
               width={20}

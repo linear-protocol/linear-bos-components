@@ -33,18 +33,8 @@ function isValid(a) {
 }
 
 /** common lib end */
-function getLinearBalance(accountId) {
-  const linearBalanceRaw = Near.view(config.contractId, "ft_balance_of", {
-    account_id: accountId,
-  });
-  if (!linearBalanceRaw) return "-";
-  const balance = Big(linearBalanceRaw).div(Big(10).pow(LiNEAR_DECIMALS));
-  return balance.lt(0) ? "0" : balance.toFixed();
-}
 
-const linearBalance = getLinearBalance(accountId);
-const formattedLinearBalance =
-  linearBalance === "-" ? "-" : Big(linearBalance).toFixed(5, BIG_ROUND_DOWN);
+const { linearBalance, formattedLinearBalance } = props;
 
 const linearPrice = Big(
   Near.view(config.contractId, "ft_price", `{}`) ?? "0"
