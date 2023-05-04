@@ -72,7 +72,7 @@ function getNearBalance(accountId) {
 }
 
 const nearBalance = state.nearBalance;
-// Initial fetch of account balance
+// Initial fetch of account NEAR balance
 if (accountId && !nearBalance) {
   getNearBalance(accountId);
 }
