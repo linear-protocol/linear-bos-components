@@ -43,10 +43,16 @@ function formatAmount(a) {
 }
 
 /** common lib end */
-function getLinearBalance(accountId) {
-  const linearBalanceRaw = Near.view(config.contractId, "ft_balance_of", {
-    account_id: accountId,
-  });
+function getLinearBalance(accountId, subscribe) {
+  const linearBalanceRaw = Near.view(
+    config.contractId,
+    "ft_balance_of",
+    {
+      account_id: accountId,
+    },
+    undefined,
+    subscribe
+  );
   if (!linearBalanceRaw) return "-";
   const balance = Big(linearBalanceRaw).div(Big(10).pow(LiNEAR_DECIMALS));
   return balance.lt(0) ? "0" : balance.toFixed();
@@ -234,6 +240,20 @@ const onClickUnstake = async () => {
       });
     }
   }
+
+  // check and update balance
+  const interval = setInterval(() => {
+    const balance = getLinearBalance(accountId, true);
+    if (balance !== "-" && balance !== linearBalance) {
+      clearInterval(interval);
+      // hide confirm modal
+      if (unstakeType === "instant") {
+        State.update({ showConfirmInstantUnstake: false });
+      } else {
+        State.update({ showConfirmDelayedUnstake: false });
+      }
+    }
+  }, 500);
 };
 
 // Ref swap constants and functions
