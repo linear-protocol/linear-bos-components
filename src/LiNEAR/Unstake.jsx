@@ -79,22 +79,32 @@ const receivedDelayedUnstakeNear = getReceivedDelayedUnstakeNear();
 const receivedInstantUnstakeNear = getReceivedInstantUnstakeNear();
 const UNSTAKE_DIFF_ERROR_RATIO = 0.05;
 const IMPACT_TOO_HIGH_ERROR = "Price impact high. Unstake less or try later";
-const priceImpactHigh =
+const validReceivedUnstakeAmount =
   isValid(receivedDelayedUnstakeNear) &&
   isValid(receivedInstantUnstakeNear) &&
   receivedDelayedUnstakeNear > 0 &&
   receivedInstantUnstakeNear > 0 &&
-  state.inputValue === state.swapAmountIn && // compare received NEAR only if the input amounts matches
+  state.inputValue === state.swapAmountIn; // compare received NEAR only if the input amounts matches
+
+if (
+  !state.inputError &&
+  validReceivedUnstakeAmount &&
   Big(receivedDelayedUnstakeNear)
     .minus(receivedInstantUnstakeNear)
     .div(receivedDelayedUnstakeNear)
-    .gt(UNSTAKE_DIFF_ERROR_RATIO);
-
-if (!state.inputError && priceImpactHigh) {
+    .gt(UNSTAKE_DIFF_ERROR_RATIO)
+) {
   State.update({
     inputError: IMPACT_TOO_HIGH_ERROR,
   });
-} else if (state.inputError === IMPACT_TOO_HIGH_ERROR && priceImpactHigh) {
+} else if (
+  state.inputError === IMPACT_TOO_HIGH_ERROR &&
+  validReceivedUnstakeAmount &&
+  Big(receivedDelayedUnstakeNear)
+    .minus(receivedInstantUnstakeNear)
+    .div(receivedDelayedUnstakeNear)
+    .lte(UNSTAKE_DIFF_ERROR_RATIO)
+) {
   State.update({
     inputError: "",
   });
