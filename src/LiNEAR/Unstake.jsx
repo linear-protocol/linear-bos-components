@@ -33,6 +33,15 @@ function isValid(a) {
   return true;
 }
 
+function formatAmount(a) {
+  return isValid(a)
+    ? Number(a).toLocaleString(undefined, {
+        minimumFractionDigits: 5,
+        maximumFractionDigits: 5,
+      })
+    : a;
+}
+
 /** common lib end */
 function getLinearBalance(accountId) {
   const linearBalanceRaw = Near.view(config.contractId, "ft_balance_of", {
@@ -82,6 +91,13 @@ function getReceivedInstantUnstakeNear() {
 
 const receivedDelayedUnstakeNear = getReceivedDelayedUnstakeNear();
 const receivedInstantUnstakeNear = getReceivedInstantUnstakeNear();
+const formattedReceivedDelayedUnstakeNear = formatAmount(
+  receivedDelayedUnstakeNear
+);
+const formattedReceivedInstantUnstakeNear = formatAmount(
+  receivedInstantUnstakeNear
+);
+
 const UNSTAKE_DIFF_ERROR_RATIO = 0.05;
 const IMPACT_TOO_HIGH_ERROR = "Price impact high. Unstake less or try later";
 const validReceivedUnstakeAmount =
@@ -461,7 +477,9 @@ return (
             }}
           />
         </UnstakeTabTitle>
-        <EstimateGetValue>{receivedInstantUnstakeNear} NEAR</EstimateGetValue>
+        <EstimateGetValue>
+          {formattedReceivedInstantUnstakeNear} NEAR
+        </EstimateGetValue>
         <UnstakeFee>Unstake fee: 0.05%</UnstakeFee>
       </UnstakeTab>
       <UnstakeTab
@@ -469,7 +487,9 @@ return (
         onClick={() => State.update({ unstakeType: "delayed" })}
       >
         <UnstakeTabTitle>DELAYED UNSTAKE ~2 DAYS</UnstakeTabTitle>
-        <EstimateGetValue>{receivedDelayedUnstakeNear} NEAR</EstimateGetValue>
+        <EstimateGetValue>
+          {formattedReceivedDelayedUnstakeNear} NEAR
+        </EstimateGetValue>
         <UnstakeFee>Unstake fee: 0</UnstakeFee>
       </UnstakeTab>
     </UnstakeTabWrapper>
@@ -478,7 +498,7 @@ return (
         src={`${config.ownerId}/widget/LiNEAR.Modal.ConfirmInstantUnstake`}
         props={{
           config,
-          youWillReceive: receivedInstantUnstakeNear,
+          youWillReceive: formattedReceivedInstantUnstakeNear,
           onClickConfirm: onClickUnstake,
           onClickCancel: () =>
             State.update({ showConfirmInstantUnstake: false }),
@@ -490,7 +510,7 @@ return (
         src={`${config.ownerId}/widget/LiNEAR.Modal.ConfirmDelayedUnstake`}
         props={{
           config,
-          youWillReceive: receivedDelayedUnstakeNear,
+          youWillReceive: formattedReceivedDelayedUnstakeNear,
           onClickConfirm: onClickUnstake,
           onClickCancel: () =>
             State.update({ showConfirmDelayedUnstake: false }),
