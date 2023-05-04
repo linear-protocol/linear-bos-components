@@ -35,8 +35,27 @@ function formatAmount(a) {
 }
 
 /** common lib end */
-function getNearBalance(accountId) {
-  asyncFetch(config.nodeUrl, {
+function updateNearBalance(account) {
+  const { amount, storage_usage } = account.body.result;
+  const COMMON_MIN_BALANCE = 0.05;
+
+  let nearBalance = "-";
+  if (amount) {
+    const availableBalance = Big(amount || 0).minus(
+      Big(storage_usage).mul(Big(10).pow(19))
+    );
+    const balance = availableBalance
+      .div(Big(10).pow(NEAR_DECIMALS))
+      .minus(COMMON_MIN_BALANCE);
+    nearBalance = balance.lt(0) ? "0" : balance.toFixed(5, BIG_ROUND_DOWN);
+  }
+  State.update({
+    nearBalance,
+  });
+}
+
+function getNearBalance(accountId, invalidate) {
+  const options = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -51,29 +70,17 @@ function getNearBalance(accountId) {
         account_id: accountId,
       },
     }),
-  }).then((account) => {
-    const { amount, storage_usage } = account.body.result;
-    const COMMON_MIN_BALANCE = 0.05;
-
-    let nearBalance = "-";
-    if (amount) {
-      const availableBalance = Big(amount || 0).minus(
-        Big(storage_usage).mul(Big(10).pow(19))
-      );
-      const balance = availableBalance
-        .div(Big(10).pow(NEAR_DECIMALS))
-        .minus(COMMON_MIN_BALANCE);
-      nearBalance = balance.lt(0) ? "0" : balance.toFixed(5, BIG_ROUND_DOWN);
-    }
-    State.update({
-      nearBalance,
-    });
-  });
+  };
+  if (invalidate) {
+    asyncFetch(config.nodeUrl, options).then(updateNearBalance);
+  } else {
+    updateNearBalance(fetch(config.nodeUrl, options));
+  }
 }
 
 const nearBalance = state.nearBalance;
 // Initial fetch of account NEAR balance
-if (accountId && !nearBalance) {
+if (accountId && !isValid(nearBalance)) {
   getNearBalance(accountId);
 }
 
@@ -177,7 +184,7 @@ const onClickStake = async () => {
   );
   // check and update balance
   const interval = setInterval(() => {
-    getNearBalance(accountId);
+    getNearBalance(accountId, true);
     if (state.nearBalance !== "-" && state.nearBalance !== nearBalance) {
       clearInterval(interval);
     }
