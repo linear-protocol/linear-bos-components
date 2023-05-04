@@ -26,7 +26,7 @@ function isValid(a) {
 
 function formatAmount(a) {
   return isValid(a)
-    ? Number(a).toLocaleString(null, {
+    ? Number(a).toLocaleString(undefined, {
         minimumFractionDigits: 5,
         maximumFractionDigits: 5,
       })
