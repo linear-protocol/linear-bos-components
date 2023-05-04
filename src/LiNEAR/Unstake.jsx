@@ -92,6 +92,7 @@ const validReceivedUnstakeAmount =
   state.inputValue === state.swapAmountIn; // compare received NEAR only if the input amounts matches
 
 if (
+  state.unstakeType === "instant" &&
   !state.inputError &&
   validReceivedUnstakeAmount &&
   Big(receivedDelayedUnstakeNear)
@@ -104,11 +105,12 @@ if (
   });
 } else if (
   state.inputError === IMPACT_TOO_HIGH_ERROR &&
-  validReceivedUnstakeAmount &&
-  Big(receivedDelayedUnstakeNear)
-    .minus(receivedInstantUnstakeNear)
-    .div(receivedDelayedUnstakeNear)
-    .lte(UNSTAKE_DIFF_ERROR_RATIO)
+  (state.unstakeType !== "instant" ||
+    (validReceivedUnstakeAmount &&
+      Big(receivedDelayedUnstakeNear)
+        .minus(receivedInstantUnstakeNear)
+        .div(receivedDelayedUnstakeNear)
+        .lte(UNSTAKE_DIFF_ERROR_RATIO)))
 ) {
   State.update({
     inputError: "",
