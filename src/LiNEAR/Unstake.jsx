@@ -23,6 +23,7 @@ const accountId = props.accountId || context.accountId;
 const isSignedIn = !!accountId;
 const NEAR_DECIMALS = 24;
 const LiNEAR_DECIMALS = 24;
+const SLIPPAGE_TOLERANCE = 0.05;
 const BIG_ROUND_DOWN = 0;
 
 function isValid(a) {
@@ -74,7 +75,9 @@ function getReceivedInstantUnstakeNear() {
   ) {
     return "-";
   }
-  return Big(swapAmountOut).toFixed(5);
+  return Big(swapAmountOut)
+    .mul(1 - Number(SLIPPAGE_TOLERANCE) / 100)
+    .toFixed(5);
 }
 
 const receivedDelayedUnstakeNear = getReceivedDelayedUnstakeNear();
@@ -220,7 +223,6 @@ const onClickUnstake = async () => {
 // token in and token out of swap
 const TOKEN_LINEAR = { id: config.contractId, decimals: LiNEAR_DECIMALS };
 const TOKEN_NEAR = { id: "NEAR", decimals: NEAR_DECIMALS };
-const SLIPPAGE_TOLERANCE = 0.05;
 
 const REF_EXCHANGE_CONTRACT_ID =
   context.networkId === "mainnet"
