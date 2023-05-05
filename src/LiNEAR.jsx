@@ -136,7 +136,7 @@ if (accountId && !isValid(nearBalance)) {
 const linearBalance = accountId ? getLinearBalance(accountId) : "-";
 
 function updateAccountInfo(callback) {
-  const interval1 = setInterval(() => {
+  const interval = setInterval(() => {
     getNearBalance(accountId, (oldBalance, newBalance) => {
       if (
         newBalance !== "-" &&
@@ -145,8 +145,8 @@ function updateAccountInfo(callback) {
       ) {
         // now update LiNEAR balance after NEAR balance has been updated
         getLinearBalance(accountId, true);
-        clearInterval(interval1);
         // stop polling and invoke callback functions if any
+        clearInterval(interval);
         if (callback) callback();
       }
     });
