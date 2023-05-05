@@ -138,12 +138,6 @@ const linearBalance = accountId ? getLinearBalance(accountId) : "-";
 function updateAccountInfo(callback) {
   const interval1 = setInterval(() => {
     getNearBalance(accountId, (oldBalance, newBalance) => {
-      console.log(
-        "invalidate",
-        oldBalance,
-        newBalance,
-        Big(newBalance).sub(oldBalance).abs().toFixed()
-      );
       if (
         newBalance !== "-" &&
         oldBalance !== "-" &&
