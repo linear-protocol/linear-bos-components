@@ -23,6 +23,7 @@ const accountId = props.accountId || context.accountId;
 const isSignedIn = !!accountId;
 const NEAR_DECIMALS = 24;
 const LiNEAR_DECIMALS = 24;
+const SLIPPAGE_TOLERANCE = 0.05;
 const BIG_ROUND_DOWN = 0;
 
 function isValid(a) {
@@ -32,9 +33,18 @@ function isValid(a) {
   return true;
 }
 
-/** common lib end */
+function formatAmount(a) {
+  return isValid(a)
+    ? Number(a).toLocaleString(undefined, {
+        minimumFractionDigits: 5,
+        maximumFractionDigits: 5,
+      })
+    : a;
+}
 
-const { linearBalance, formattedLinearBalance } = props;
+/** common lib end */
+const linearBalance = props.linearBalance || "-";
+const formattedLinearBalance = props.formattedLinearBalance || "-";
 
 const linearPrice = Big(
   Near.view(config.contractId, "ft_price", `{}`) ?? "0"
@@ -64,11 +74,20 @@ function getReceivedInstantUnstakeNear() {
   ) {
     return "-";
   }
-  return Big(swapAmountOut).toFixed(5);
+  return Big(swapAmountOut)
+    .mul(1 - Number(SLIPPAGE_TOLERANCE) / 100)
+    .toFixed(5);
 }
 
 const receivedDelayedUnstakeNear = getReceivedDelayedUnstakeNear();
 const receivedInstantUnstakeNear = getReceivedInstantUnstakeNear();
+const formattedReceivedDelayedUnstakeNear = formatAmount(
+  receivedDelayedUnstakeNear
+);
+const formattedReceivedInstantUnstakeNear = formatAmount(
+  receivedInstantUnstakeNear
+);
+
 const UNSTAKE_DIFF_ERROR_RATIO = 0.05;
 const IMPACT_TOO_HIGH_ERROR = "Price impact high. Unstake less or try later";
 const validReceivedUnstakeAmount =
@@ -79,6 +98,7 @@ const validReceivedUnstakeAmount =
   state.inputValue === state.swapAmountIn; // compare received NEAR only if the input amounts matches
 
 if (
+  state.unstakeType === "instant" &&
   !state.inputError &&
   validReceivedUnstakeAmount &&
   Big(receivedDelayedUnstakeNear)
@@ -91,11 +111,12 @@ if (
   });
 } else if (
   state.inputError === IMPACT_TOO_HIGH_ERROR &&
-  validReceivedUnstakeAmount &&
-  Big(receivedDelayedUnstakeNear)
-    .minus(receivedInstantUnstakeNear)
-    .div(receivedDelayedUnstakeNear)
-    .lte(UNSTAKE_DIFF_ERROR_RATIO)
+  (state.unstakeType !== "instant" ||
+    (validReceivedUnstakeAmount &&
+      Big(receivedDelayedUnstakeNear)
+        .minus(receivedInstantUnstakeNear)
+        .div(receivedDelayedUnstakeNear)
+        .lte(UNSTAKE_DIFF_ERROR_RATIO)))
 ) {
   State.update({
     inputError: "",
@@ -194,6 +215,8 @@ const onClickUnstake = async () => {
       swapAmountOut,
       SLIPPAGE_TOLERANCE
     );
+    // hide confirm modal
+    State.update({ showConfirmInstantUnstake: false });
   } else {
     if (unstakeMax) {
       Near.call(config.contractId, "unstake_all", {});
@@ -202,6 +225,13 @@ const onClickUnstake = async () => {
         amount,
       });
     }
+    // hide confirm modal
+    State.update({ showConfirmDelayedUnstake: false });
+  }
+
+  // update account balances
+  if (props.updateAccountInfo) {
+    props.updateAccountInfo();
   }
 };
 
@@ -210,7 +240,6 @@ const onClickUnstake = async () => {
 // token in and token out of swap
 const TOKEN_LINEAR = { id: config.contractId, decimals: LiNEAR_DECIMALS };
 const TOKEN_NEAR = { id: "NEAR", decimals: NEAR_DECIMALS };
-const SLIPPAGE_TOLERANCE = 0.05;
 
 const REF_EXCHANGE_CONTRACT_ID =
   context.networkId === "mainnet"
@@ -447,7 +476,9 @@ return (
             }}
           />
         </UnstakeTabTitle>
-        <EstimateGetValue>{receivedInstantUnstakeNear} NEAR</EstimateGetValue>
+        <EstimateGetValue>
+          {formattedReceivedInstantUnstakeNear} NEAR
+        </EstimateGetValue>
         <UnstakeFee>Unstake fee: 0.05%</UnstakeFee>
       </UnstakeTab>
       <UnstakeTab
@@ -455,7 +486,9 @@ return (
         onClick={() => State.update({ unstakeType: "delayed" })}
       >
         <UnstakeTabTitle>DELAYED UNSTAKE ~2 DAYS</UnstakeTabTitle>
-        <EstimateGetValue>{receivedDelayedUnstakeNear} NEAR</EstimateGetValue>
+        <EstimateGetValue>
+          {formattedReceivedDelayedUnstakeNear} NEAR
+        </EstimateGetValue>
         <UnstakeFee>Unstake fee: 0</UnstakeFee>
       </UnstakeTab>
     </UnstakeTabWrapper>
@@ -464,7 +497,7 @@ return (
         src={`${config.ownerId}/widget/LiNEAR.Modal.ConfirmInstantUnstake`}
         props={{
           config,
-          youWillReceive: receivedInstantUnstakeNear,
+          youWillReceive: formattedReceivedInstantUnstakeNear,
           onClickConfirm: onClickUnstake,
           onClickCancel: () =>
             State.update({ showConfirmInstantUnstake: false }),
@@ -476,7 +509,7 @@ return (
         src={`${config.ownerId}/widget/LiNEAR.Modal.ConfirmDelayedUnstake`}
         props={{
           config,
-          youWillReceive: receivedDelayedUnstakeNear,
+          youWillReceive: formattedReceivedDelayedUnstakeNear,
           onClickConfirm: onClickUnstake,
           onClickCancel: () =>
             State.update({ showConfirmDelayedUnstake: false }),
