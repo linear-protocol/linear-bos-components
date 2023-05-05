@@ -35,54 +35,7 @@ function formatAmount(a) {
 }
 
 /** common lib end */
-function updateNearBalance(account) {
-  const { amount, storage_usage } = account.body.result;
-  const COMMON_MIN_BALANCE = 0.05;
-
-  let nearBalance = "-";
-  if (amount) {
-    const availableBalance = Big(amount || 0).minus(
-      Big(storage_usage).mul(Big(10).pow(19))
-    );
-    const balance = availableBalance
-      .div(Big(10).pow(NEAR_DECIMALS))
-      .minus(COMMON_MIN_BALANCE);
-    nearBalance = balance.lt(0) ? "0" : balance.toFixed(5, BIG_ROUND_DOWN);
-  }
-  State.update({
-    nearBalance,
-  });
-}
-
-function getNearBalance(accountId, invalidate) {
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      id: "dontcare",
-      method: "query",
-      params: {
-        request_type: "view_account",
-        finality: "final",
-        account_id: accountId,
-      },
-    }),
-  };
-  if (invalidate) {
-    asyncFetch(config.nodeUrl, options).then(updateNearBalance);
-  } else {
-    updateNearBalance(fetch(config.nodeUrl, options));
-  }
-}
-
-const nearBalance = state.nearBalance;
-// Initial fetch of account NEAR balance
-if (accountId && !isValid(nearBalance)) {
-  getNearBalance(accountId);
-}
+const nearBalance = props.nearBalance || "-";
 
 /** events start */
 const onChange = (e) => {
@@ -182,13 +135,11 @@ const onClickStake = async () => {
     undefined,
     Big(state.inputValue).mul(Big(10).pow(NEAR_DECIMALS)).toFixed(0)
   );
-  // check and update balance
-  const interval = setInterval(() => {
-    getNearBalance(accountId, true);
-    if (state.nearBalance !== "-" && state.nearBalance !== nearBalance) {
-      clearInterval(interval);
-    }
-  }, 500);
+
+  // update account balances
+  if (props.updateAccountInfo) {
+    props.updateAccountInfo();
+  }
 };
 /** events end */
 
