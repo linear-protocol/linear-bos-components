@@ -4,6 +4,7 @@ const isSignedIn = !!accountId;
 const NEAR_DECIMALS = 24;
 const LiNEAR_DECIMALS = 24;
 const BIG_ROUND_DOWN = 0;
+const MIN_BALANCE_CHANGE = 0.5;
 
 function isValid(a) {
   if (!a) return false;
@@ -64,11 +65,11 @@ const updatePage = (pageName) => State.update({ page: pageName });
 
 // Account balances
 
-function updateNearBalance(account) {
+function updateNearBalance(account, onInvalidate) {
   const { amount, storage_usage } = account.body.result;
   const COMMON_MIN_BALANCE = 0.05;
 
-  let nearBalance = "-";
+  let newBalance = "-";
   if (amount) {
     const availableBalance = Big(amount || 0).minus(
       Big(storage_usage).mul(Big(10).pow(19))
@@ -76,14 +77,17 @@ function updateNearBalance(account) {
     const balance = availableBalance
       .div(Big(10).pow(NEAR_DECIMALS))
       .minus(COMMON_MIN_BALANCE);
-    nearBalance = balance.lt(0) ? "0" : balance.toFixed(5, BIG_ROUND_DOWN);
+    newBalance = balance.lt(0) ? "0" : balance.toFixed(5, BIG_ROUND_DOWN);
   }
   State.update({
-    nearBalance,
+    nearBalance: newBalance,
   });
+  if (onInvalidate) {
+    onInvalidate(nearBalance, newBalance);
+  }
 }
 
-function getNearBalance(accountId, invalidate) {
+function getNearBalance(accountId, onInvalidate) {
   const options = {
     method: "POST",
     headers: {
@@ -100,8 +104,10 @@ function getNearBalance(accountId, invalidate) {
       },
     }),
   };
-  if (invalidate) {
-    asyncFetch(config.nodeUrl, options).then(updateNearBalance);
+  if (onInvalidate) {
+    asyncFetch(config.nodeUrl, options).then((account) =>
+      updateNearBalance(account, onInvalidate)
+    );
   } else {
     updateNearBalance(fetch(config.nodeUrl, options));
   }
@@ -130,14 +136,26 @@ if (accountId && !isValid(nearBalance)) {
 const linearBalance = accountId ? getLinearBalance(accountId) : "-";
 
 function updateAccountInfo(callback) {
-  // check and update balance
-  const interval = setInterval(() => {
-    getNearBalance(accountId, true);
-    const balance = getLinearBalance(accountId, true);
-    if (balance !== "-" && balance !== linearBalance) {
-      clearInterval(interval);
-      if (callback) callback();
-    }
+  const interval1 = setInterval(() => {
+    getNearBalance(accountId, (oldBalance, newBalance) => {
+      console.log(
+        "invalidate",
+        oldBalance,
+        newBalance,
+        Big(newBalance).sub(oldBalance).abs().toFixed()
+      );
+      if (
+        newBalance !== "-" &&
+        oldBalance !== "-" &&
+        Big(newBalance).sub(oldBalance).abs().gt(MIN_BALANCE_CHANGE)
+      ) {
+        // now update LiNEAR balance after NEAR balance has been updated
+        getLinearBalance(accountId, true);
+        clearInterval(interval1);
+        // stop polling and invoke callback functions if any
+        if (callback) callback();
+      }
+    });
   }, 500);
 }
 
