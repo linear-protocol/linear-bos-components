@@ -2,7 +2,6 @@
 State.init({
   inputValue: "",
   inputError: "",
-  nearBalance: "",
 });
 /** state init end */
 
