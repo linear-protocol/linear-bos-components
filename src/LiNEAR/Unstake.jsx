@@ -43,16 +43,7 @@ function formatAmount(a) {
 }
 
 /** common lib end */
-function getLinearBalance(accountId) {
-  const linearBalanceRaw = Near.view(config.contractId, "ft_balance_of", {
-    account_id: accountId,
-  });
-  if (!linearBalanceRaw) return "-";
-  const balance = Big(linearBalanceRaw).div(Big(10).pow(LiNEAR_DECIMALS));
-  return balance.lt(0) ? "0" : balance.toFixed();
-}
-
-const linearBalance = getLinearBalance(accountId);
+const linearBalance = props.linearBalance || "-";
 const formattedLinearBalance =
   linearBalance === "-" ? "-" : Big(linearBalance).toFixed(5, BIG_ROUND_DOWN);
 
@@ -225,6 +216,8 @@ const onClickUnstake = async () => {
       swapAmountOut,
       SLIPPAGE_TOLERANCE
     );
+    // hide confirm modal
+    State.update({ showConfirmInstantUnstake: false });
   } else {
     if (unstakeMax) {
       Near.call(config.contractId, "unstake_all", {});
@@ -233,6 +226,13 @@ const onClickUnstake = async () => {
         amount,
       });
     }
+    // hide confirm modal
+    State.update({ showConfirmDelayedUnstake: false });
+  }
+
+  // update account balances
+  if (props.updateAccountInfo) {
+    props.updateAccountInfo();
   }
 };
 
