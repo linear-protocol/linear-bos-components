@@ -149,7 +149,10 @@ function formatDate(timestamp) {
 const data = state.data || {};
 const stakingRewards = data.stakingRewards
   ? formatAmount(
-      Big(data.stakingRewards).div(Big(10).pow(NEAR_DECIMALS)).toFixed(5)
+      Math.max(
+        Big(data.stakingRewards, 0).div(Big(10).pow(NEAR_DECIMALS)).toFixed(5),
+        0
+      )
     )
   : "-";
 const firstStakingTime = data.firstStakingTime
