@@ -174,7 +174,7 @@ if (state.page === "stake") {
       {state.tabName === "stake" && (
         <Widget
           src={`${config.ownerId}/widget/LiNEAR.Stake`}
-          props={{ config, nearBalance, updateAccountInfo }}
+          props={{ config, nearBalance, linearBalance, updateAccountInfo }}
         />
       )}
       {state.tabName === "unstake" && (

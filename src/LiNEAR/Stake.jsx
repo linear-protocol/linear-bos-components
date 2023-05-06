@@ -35,6 +35,7 @@ function formatAmount(a) {
 
 /** common lib end */
 const nearBalance = props.nearBalance || "-";
+const linearBalance = props.linearBalance || "-";
 
 /** events start */
 const onChange = (e) => {
@@ -127,13 +128,29 @@ const onClickStake = async () => {
     } else setInputError("");
     return;
   }
-  Near.call(
-    config.contractId,
-    "deposit_and_stake",
-    {},
-    undefined,
-    Big(state.inputValue).mul(Big(10).pow(NEAR_DECIMALS)).toFixed(0)
-  );
+
+  const stake = {
+    contractName: config.contractId,
+    methodName: "deposit_and_stake",
+    deposit: Big(state.inputValue).mul(Big(10).pow(NEAR_DECIMALS)).toFixed(0),
+    args: {},
+  };
+  const registerFt = {
+    contractName: config.contractId,
+    methodName: "ft_balance_of",
+    args: {
+      account_id: accountId,
+    },
+  };
+  const txs = [stake];
+  // If account has no LiNEAR, we assume she/he needs to register LiNEAR token.
+  // By adding a `ft_balance_of` function call, the NEAR indexer will automatically
+  // add LiNEAR token into caller's NEAR wallet token list.
+  if (Number(linearBalance) === 0) {
+    txs.push(registerFt);
+  }
+
+  Near.call(txs);
 
   // update account balances
   if (props.updateAccountInfo) {
