@@ -56,6 +56,11 @@ function queryStakingData(accountId, excludingFees) {
     return undefined;
   }
 
+  const linearPrice = getLinearPrice();
+  if (Number(linearPrice) === 0) {
+    return undefined;
+  }
+
   const {
     firstStakingTime,
     stakedNear,
@@ -68,11 +73,6 @@ function queryStakingData(accountId, excludingFees) {
     transferedOutShares,
     transferedOutValue,
   } = user;
-
-  const linearPrice = getLinearPrice();
-  if (Number(linearPrice) === 0) {
-    return undefined;
-  }
 
   const transferIn = linearPrice
     .mul(transferedInShares)
