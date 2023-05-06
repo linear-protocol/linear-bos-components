@@ -27,30 +27,15 @@ function querySubgraph(query, variables) {
   if (res && res.ok) {
     return res.body;
   } else {
-    return undefined;
+    return {};
   }
 }
 
-function getFirstStakingTime(accountId) {
+function queryStakingData(accountId, excludingFees) {
   const { data } = querySubgraph(`
     {
       users (first: 1, where: {id: "${accountId}"} ){
         firstStakingTime
-      }
-    }
-  `);
-  if (data) {
-    // turn nanoseconds into milliseconds
-    return parseInt(data.users[0]?.firstStakingTime / 1_000_000);
-  } else {
-    return undefined;
-  }
-}
-
-function getStakingRewards(accountId, excludingFees) {
-  const { data } = querySubgraph(`
-    {
-      users (first: 1, where: {id: "${accountId}"} ){
         mintedLinear
         stakedNear
         unstakedLinear
@@ -67,12 +52,12 @@ function getStakingRewards(accountId, excludingFees) {
     return undefined;
   }
   const user = data.users[0];
-  // If the user has no relevant operations before, return 0
   if (!user) {
     return undefined;
   }
 
   const {
+    firstStakingTime,
     stakedNear,
     mintedLinear,
     unstakedLinear,
@@ -104,18 +89,23 @@ function getStakingRewards(accountId, excludingFees) {
     .plus(unstakeReceivedNear)
     .plus(netTransfer);
 
-  if (!excludingFees) {
-    return rewards.plus(feesPaid).toFixed(0);
-  } else {
-    return rewards.toFixed(0);
-  }
+  return {
+    // turn nanoseconds into milliseconds
+    firstStakingTime: firstStakingTime
+      ? parseInt(firstStakingTime / 1_000_000)
+      : undefined,
+    // add fees if necessary
+    stakingRewards: (excludingFees ? rewards : rewards.plus(feesPaid)).toFixed(
+      0
+    ),
+  };
 }
 
 if (onLoad) {
-  onLoad({
-    firstStakingTime: getFirstStakingTime(accountId),
-    stakingRewards: getStakingRewards(accountId),
-  });
+  const data = queryStakingData(accountId);
+  if (data) {
+    onLoad(data);
+  }
 }
 
 return <div style={{ display: "none" }} />;
