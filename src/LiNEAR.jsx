@@ -212,6 +212,7 @@ if (state.page === "stake") {
       />
       {state.tabName === "stake" && (
         <Widget
+          src={`${config.ownerId}/widget/LiNEAR.Stake`}
           props={{ config, nearBalance, linearBalance, updateAccountInfo }}
         />
       )}
