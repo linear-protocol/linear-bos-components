@@ -24,37 +24,18 @@ function isValid(a) {
   return true;
 }
 
-/** common lib end */
-function getNearBalance(accountId) {
-  const account = fetch(config.nodeUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      id: "dontcare",
-      method: "query",
-      params: {
-        request_type: "view_account",
-        finality: "final",
-        account_id: accountId,
-      },
-    }),
-  });
-  const { amount, storage_usage } = account.body.result;
-  const COMMON_MIN_BALANCE = 0.05;
-  if (!amount) return "-";
-  const availableBalance = Big(amount || 0).minus(
-    Big(storage_usage).mul(Big(10).pow(19))
-  );
-  const balance = availableBalance
-    .div(Big(10).pow(NEAR_DECIMALS))
-    .minus(COMMON_MIN_BALANCE);
-  return balance.lt(0) ? "0" : balance.toFixed(5, BIG_ROUND_DOWN);
+function formatAmount(a) {
+  return isValid(a)
+    ? Number(a).toLocaleString(undefined, {
+        minimumFractionDigits: 5,
+        maximumFractionDigits: 5,
+      })
+    : a;
 }
 
-const nearBalance = getNearBalance(accountId);
+/** common lib end */
+const nearBalance = props.nearBalance || "-";
+const linearBalance = props.linearBalance || "-";
 
 /** events start */
 const onChange = (e) => {
@@ -147,25 +128,34 @@ const onClickStake = async () => {
     } else setInputError("");
     return;
   }
-  Near.call(
-    config.contractId,
-    "deposit_and_stake",
-    {},
-    undefined,
-    Big(state.inputValue).mul(Big(10).pow(NEAR_DECIMALS)).toFixed(0)
-  );
-  // check and update balance
-  const interval = setInterval(() => {
-    const balance = getNearBalance(accountId);
-    if (balance !== nearBalance) {
-      clearInterval(interval);
-      State.update({
-        inputValue: "",
-        inputError: "",
-        nearBalance: balance,
-      });
-    }
-  }, 500);
+
+  const stake = {
+    contractName: config.contractId,
+    methodName: "deposit_and_stake",
+    deposit: Big(state.inputValue).mul(Big(10).pow(NEAR_DECIMALS)).toFixed(0),
+    args: {},
+  };
+  const registerFt = {
+    contractName: config.contractId,
+    methodName: "ft_balance_of",
+    args: {
+      account_id: accountId,
+    },
+  };
+  const txs = [stake];
+  // If account has no LiNEAR, we assume she/he needs to register LiNEAR token.
+  // By adding a `ft_balance_of` function call, the NEAR indexer will automatically
+  // add LiNEAR token into caller's NEAR wallet token list.
+  if (Number(linearBalance) === 0) {
+    txs.push(registerFt);
+  }
+
+  Near.call(txs);
+
+  // update account balances
+  if (props.updateAccountInfo) {
+    props.updateAccountInfo();
+  }
 };
 /** events end */
 
@@ -176,11 +166,12 @@ const linearPrice = Big(
   Near.view(config.contractId, "ft_price", `{}`) ?? "0"
 ).div(Big(10).pow(24));
 
-const youWillReceive = (
+const receivedLinear = (
   linearPrice.lte(0)
     ? Big(0)
     : Big(isValid(state.inputValue) ? state.inputValue : 0).div(linearPrice)
 ).toFixed(5, BIG_ROUND_DOWN);
+const formattedReceivedLinear = formatAmount(receivedLinear);
 
 const StakeFormWrapper = styled.div`
   width: 100%;
@@ -216,7 +207,7 @@ return (
     />
     <Widget
       src={`${config.ownerId}/widget/LiNEAR.Message.YouWillReceive`}
-      props={{ text: `${youWillReceive} LiNEAR` }}
+      props={{ text: `${formattedReceivedLinear} LiNEAR` }}
     />
   </StakeFormWrapper>
 );
