@@ -104,13 +104,9 @@ function getNearBalance(accountId, onInvalidate) {
       },
     }),
   };
-  if (onInvalidate) {
-    asyncFetch(config.nodeUrl, options).then((account) =>
-      updateNearBalance(account, onInvalidate)
-    );
-  } else {
-    updateNearBalance(fetch(config.nodeUrl, options));
-  }
+  asyncFetch(config.nodeUrl, options).then((account) =>
+    updateNearBalance(account, onInvalidate)
+  );
 }
 
 function getLinearBalance(accountId, subscribe) {
@@ -131,7 +127,7 @@ function getLinearBalance(accountId, subscribe) {
 const nearBalance = state.nearBalance;
 // Initial fetch of account NEAR balance
 if (accountId && !isValid(nearBalance)) {
-  getNearBalance(accountId, () => {});
+  getNearBalance(accountId);
 }
 const linearBalance = accountId ? getLinearBalance(accountId) : "-";
 
