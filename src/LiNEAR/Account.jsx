@@ -1,3 +1,5 @@
+const ONE_MICRO_NEAR = "1000000000000000000";
+const YOCTONEAR = "1000000000000000000000000";
 const MyAccountTitle = styled.h1`
   font-size: 40px;
   font-weight: bold;
@@ -17,6 +19,14 @@ const MyAccountCardWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
+`;
+
+const MyAccountCardGroupWrapper = styled.div`
+  border-radius: 15px;
+  background: #12123f;
+
+  padding: 24px 20px;
+  width: 100%;
 `;
 
 const TokenValue = styled.div`
@@ -58,7 +68,44 @@ const RewardsFinishedTime = styled.div`
   align-items: flex-end;
 `;
 
-const { updatePage, updateTabName, config, nearBalance, linearBalance } = props;
+const NearIcon = () => (
+  <img
+    src="https://ipfs.near.social/ipfs/bafkreid5xjykpqdvinmj432ldrkbjisrp3m4n25n4xefd32eml674ypqly"
+    width={20}
+    height={20}
+    alt="NEAR Icon"
+  />
+);
+
+const LiNEARIcon = () => (
+  <img
+    src="https://ipfs.near.social/ipfs/bafkreie2nqrjdjka3ckf4doocsrip5hwqrxh37jzwul2nyzeg3badfl2pm"
+    width={20}
+    height={20}
+    alt="LiNEAR Icon"
+  />
+);
+
+const HorizontalLine = () => (
+  <hr
+    style={{
+      width: "100%",
+      background: "black",
+      border: "0",
+      height: "1px",
+      borderRadius: "9999px",
+    }}
+  />
+);
+
+const {
+  updatePage,
+  updateTabName,
+  config,
+  nearBalance,
+  linearBalance,
+  account,
+} = props;
 if (!config) {
   return "Component not be loaded. Missing `config` props";
 }
@@ -72,12 +119,7 @@ return (
         <div>
           <TokenValue>
             <div>{nearBalance}</div>
-            <img
-              src="https://ipfs.near.social/ipfs/bafkreid5xjykpqdvinmj432ldrkbjisrp3m4n25n4xefd32eml674ypqly"
-              width={20}
-              height={20}
-              alt="NEAR Icon"
-            />
+            <NearIcon />
           </TokenValue>
           <GrayContent>Available NEAR in Wallet</GrayContent>
         </div>
@@ -101,12 +143,7 @@ return (
         <div>
           <TokenValue>
             <div>{linearBalance}</div>
-            <img
-              src="https://ipfs.near.social/ipfs/bafkreie2nqrjdjka3ckf4doocsrip5hwqrxh37jzwul2nyzeg3badfl2pm"
-              width={20}
-              height={20}
-              alt="LiNEAR Icon"
-            />
+            <LiNEARIcon />
           </TokenValue>
           <GrayContent>Your LiNEAR Tokens</GrayContent>
         </div>
@@ -130,12 +167,7 @@ return (
           <GrayContent>Staking Rewards</GrayContent>
           <TokenValue>
             <div>9.79920</div>
-            <img
-              src="https://ipfs.near.social/ipfs/bafkreid5xjykpqdvinmj432ldrkbjisrp3m4n25n4xefd32eml674ypqly"
-              width={20}
-              height={20}
-              alt="NEAR Icon"
-            />
+            <NearIcon />
           </TokenValue>
         </div>
         <RewardsFinishedTime>
@@ -149,12 +181,58 @@ return (
           <div>Staking rewards since 2022/04/18</div>
         </RewardsFinishedTime>
       </MyAccountCardWrapper>
+
+      {account &&
+        account.unstaked_balance &&
+        Big(account.unstaked_balance).gte(ONE_MICRO_NEAR) && (
+          <MyAccountCardGroupWrapper style={{ marginTop: "10px" }}>
+            <div>
+              <TokenValue>
+                <div>
+                  {account.unstaked_balance
+                    ? Big(account.unstaked_balance).div(YOCTONEAR).toFixed(5)
+                    : "-"}
+                </div>
+                <NearIcon />
+              </TokenValue>
+              <GrayContent>Pending Unstake</GrayContent>
+            </div>
+            <HorizontalLine />
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div>
+                <TokenValue>
+                  <div>Unstake is Ready</div>
+                  {/* <div>14.55128</div>
+            <NearIcon /> */}
+                </TokenValue>
+                <GrayContent>Remaining</GrayContent>
+              </div>
+              <div style={{ width: "130px" }}>
+                <Widget
+                  src={`${config.ownerId}/widget/LiNEAR.Button`}
+                  props={{
+                    onClick: () => {
+                      // onClick withdraw
+                    },
+                    text: "Withdraw",
+                    size: "base",
+                    full: "full",
+                  }}
+                />
+              </div>
+            </div>
+          </MyAccountCardGroupWrapper>
+        )}
       <div style={{ marginTop: "16px" }}>
         <Widget
           src={`${config.ownerId}/widget/LiNEAR.Button`}
           props={{
             onClick: () => {
-              // todos
+              Near.call(config.contractId, "ft_transfer", {
+                receiver_id: accountId,
+                amount: "0",
+                memo: "Add LiNEAR to NEAR Web Wallet",
+              });
             },
             text: "Add LiNEAR to NEAR Web Wallet",
             padding: "large",

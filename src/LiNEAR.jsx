@@ -238,6 +238,7 @@ if (state.page === "stake") {
         updateTabName,
         config,
         nearBalance,
+        account,
         linearBalance: formattedLinearBalance,
       }}
     />
