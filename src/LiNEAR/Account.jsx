@@ -137,6 +137,15 @@ function formatAmount(a) {
     : a;
 }
 
+function formatDate(timestamp) {
+  const d = new Date(timestamp);
+  return [
+    d.getFullYear(),
+    ("0" + (d.getMonth() + 1)).slice(-2),
+    ("0" + d.getDate()).slice(-2),
+  ].join("/");
+}
+
 const data = state.data;
 const stakingRewards =
   data && data.stakingRewards
@@ -145,12 +154,7 @@ const stakingRewards =
       )
     : "-";
 const firstStakingTime =
-  data && data.firstStakingTime
-    ? new Date(data.firstStakingTime)
-        .toISOString()
-        .slice(0, 10)
-        .replace(/-/g, "/")
-    : "-";
+  data && data.firstStakingTime ? formatDate(data.firstStakingTime) : "-";
 
 return (
   <Main>
