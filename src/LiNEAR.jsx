@@ -131,7 +131,7 @@ function getLinearBalance(accountId, subscribe) {
 const nearBalance = state.nearBalance;
 // Initial fetch of account NEAR balance
 if (accountId && !isValid(nearBalance)) {
-  getNearBalance(accountId);
+  getNearBalance(accountId, () => {});
 }
 const linearBalance = accountId ? getLinearBalance(accountId) : "-";
 
