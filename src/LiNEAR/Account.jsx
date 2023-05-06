@@ -1,6 +1,8 @@
 const ONE_MICRO_NEAR = "1000000000000000000";
 const YOCTONEAR = "1000000000000000000000000";
 const NEAR_DECIMALS = 24;
+const BIG_ROUND_DOWN = 0;
+
 const MyAccountTitle = styled.h1`
   font-size: 40px;
   font-weight: bold;

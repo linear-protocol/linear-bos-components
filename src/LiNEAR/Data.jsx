@@ -7,6 +7,12 @@ const subgraphApiUrl =
 
 const { config, onLoad } = props;
 
+function getLinearPrice() {
+  return Big(Near.view(config.contractId, "ft_price", "{}") ?? "0").div(
+    Big(10).pow(LiNEAR_DECIMALS)
+  );
+}
+
 function querySubgraph(query, variables) {
   const res = fetch(subgraphApiUrl, {
     method: "POST",
@@ -41,10 +47,15 @@ function getFirstStakingTime(accountId) {
   }
 }
 
-function getTransferIncome(accountId) {
+function getStakingRewards(accountId, excludingFees) {
   const { data } = querySubgraph(`
     {
-      users(first: 1, where:{id:"${accountId}"}) {
+      users (first: 1, where: {id: "${accountId}"} ){
+        mintedLinear
+        stakedNear
+        unstakedLinear
+        unstakeReceivedNear
+        feesPaid
         transferedInShares
         transferedInValue
         transferedOutShares
@@ -55,66 +66,49 @@ function getTransferIncome(accountId) {
   if (!data) {
     return undefined;
   }
-
-  const linearPrice = getLinearPrice();
-  const transferInShares = data.users[0].transferedInShares;
-  const transferInValue = data.users[0].transferedInValue;
-  const transferOutShares = data.users[0].transferedOutShares;
-  const transferOutValue = data.users[0].transferedOutValue;
-
-  let transferInReward = linearPrice * transferInShares - transferInValue;
-  let transferOutReward = linearPrice * transferOutShares - transferOutValue;
-  return transferInReward - transferOutReward;
-}
-
-function getLinearPrice() {
-  return Big(Near.view(config.contractId, "ft_price", "{}") ?? "0").div(
-    Big(10).pow(LiNEAR_DECIMALS)
-  );
-}
-
-function getStakingRewards(accountId, excludingFees) {
-  const { data } = querySubgraph(`
-    {
-      users (first: 1, where: {id: "${accountId}"} ){
-        mintedLinear
-        stakedNear
-        unstakedLinear
-        unstakeReceivedNear
-        feesPaid
-      }
-    }
-  `);
-  if (!data) {
-    return "0";
-  }
   let user = data.users[0];
   // If the user has no relevant operations before, return 0
   if (!user) {
-    return "0";
+    return undefined;
   }
 
-  const linearPrice = Big(getLinearPrice());
-  const mintedLinear = Big(user.mintedLinear);
-  const stakedNear = Big(user.stakedNear);
-  const unstakedLinear = Big(user.unstakedLinear);
-  const unstakeReceivedNEAR = Big(user.unstakeReceivedNear);
-  const feesPaid = Big(user.feesPaid);
-  const currentLinear = mintedLinear.minus(unstakedLinear);
-  const transferReward = Big(getTransferIncome(accountId));
+  const {
+    stakedNear,
+    mintedLinear,
+    unstakedLinear,
+    unstakeReceivedNear,
+    feesPaid,
+    transferedInShares,
+    transferedInValue,
+    transferedOutShares,
+    transferedOutValue,
+  } = user;
 
-  const reward = currentLinear
-    .times(linearPrice)
-    .round()
+  const linearPrice = getLinearPrice();
+  if (Number(linearPrice) === 0) {
+    return undefined;
+  }
+
+  const transferIn = linearPrice
+    .mul(transferedInShares)
+    .minus(transferedInValue);
+  const transferOut = linearPrice
+    .mul(transferedOutShares)
+    .minus(transferedOutValue);
+  const netTransfer = transferIn.minus(transferOut);
+
+  const currentLinear = Big(mintedLinear).minus(unstakedLinear);
+
+  const rewards = currentLinear
+    .mul(linearPrice)
     .minus(stakedNear)
-    .plus(unstakeReceivedNEAR)
-    .plus(transferReward);
+    .plus(unstakeReceivedNear)
+    .plus(netTransfer);
 
   if (!excludingFees) {
-    const rewardFinal = reward.plus(feesPaid);
-    return rewardFinal.toFixed();
+    return rewards.plus(feesPaid).toFixed(0);
   } else {
-    return reward.toFixed();
+    return rewards.toFixed(0);
   }
 }
 
