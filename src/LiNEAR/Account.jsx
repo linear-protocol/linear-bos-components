@@ -146,15 +146,15 @@ function formatDate(timestamp) {
   ].join("/");
 }
 
-const data = state.data;
-const stakingRewards =
-  data && data.stakingRewards
-    ? formatAmount(
-        Big(data.stakingRewards).div(Big(10).pow(NEAR_DECIMALS)).toFixed(5)
-      )
-    : "-";
-const firstStakingTime =
-  data && data.firstStakingTime ? formatDate(data.firstStakingTime) : "-";
+const data = state.data || {};
+const stakingRewards = data.stakingRewards
+  ? formatAmount(
+      Big(data.stakingRewards).div(Big(10).pow(NEAR_DECIMALS)).toFixed(5)
+    )
+  : "-";
+const firstStakingTime = data.firstStakingTime
+  ? formatDate(data.firstStakingTime)
+  : "-";
 
 return (
   <Main>
