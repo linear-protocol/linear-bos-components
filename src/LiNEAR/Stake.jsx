@@ -143,6 +143,9 @@ const onClickStake = async () => {
     },
   };
   const txs = [stake];
+  // If account has no LiNEAR, we assume she/he needs to register LiNEAR token.
+  // By adding a `ft_balance_of` function call, the NEAR indexer will automatically
+  // add LiNEAR token into caller's NEAR wallet token list.
   if (Number(linearBalance) === 0) {
     txs.push(registerFt);
   }
