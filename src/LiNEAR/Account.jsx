@@ -1,5 +1,8 @@
 const ONE_MICRO_NEAR = "1000000000000000000";
 const YOCTONEAR = "1000000000000000000000000";
+const NEAR_DECIMALS = 24;
+const BIG_ROUND_DOWN = 0;
+
 const MyAccountTitle = styled.h1`
   font-size: 40px;
   font-weight: bold;
@@ -111,8 +114,58 @@ if (!config) {
   return "Component not be loaded. Missing `config` props";
 }
 
+State.init({
+  data: {},
+});
+
+function onLoad(data) {
+  State.update({ data });
+}
+
+function isValid(a) {
+  if (!a) return false;
+  if (isNaN(Number(a))) return false;
+  if (a === "") return false;
+  return true;
+}
+
+function formatAmount(a) {
+  return isValid(a)
+    ? Number(a).toLocaleString(undefined, {
+        minimumFractionDigits: 5,
+        maximumFractionDigits: 5,
+      })
+    : a;
+}
+
+function formatDate(timestamp) {
+  const d = new Date(timestamp);
+  return [
+    d.getFullYear(),
+    ("0" + (d.getMonth() + 1)).slice(-2),
+    ("0" + d.getDate()).slice(-2),
+  ].join("/");
+}
+
+const data = state.data || {};
+const stakingRewards = data.stakingRewards
+  ? formatAmount(
+      Math.max(
+        Big(data.stakingRewards, 0).div(Big(10).pow(NEAR_DECIMALS)).toFixed(5),
+        0
+      )
+    )
+  : "-";
+const firstStakingTime = data.firstStakingTime
+  ? formatDate(data.firstStakingTime)
+  : "-";
+
 return (
   <Main>
+    <Widget
+      src={`${config.ownerId}/widget/LiNEAR.Data`}
+      props={{ config, onLoad }}
+    />
     <Widget src={`${config.ownerId}/widget/LiNEAR.Navigation`} />
     <MyAccountTitle>My Account</MyAccountTitle>
     <MyAccountContent>
@@ -167,7 +220,7 @@ return (
         <div>
           <GrayContent>Staking Rewards</GrayContent>
           <TokenValue>
-            <div>9.79920</div>
+            <div>{stakingRewards}</div>
             <NearIcon />
           </TokenValue>
         </div>
@@ -179,7 +232,7 @@ return (
                 "Staking rewards are included in the LiNEAR price. LiNEAR price increases every epoch (12~15 hours).",
             }}
           />
-          <div>Staking rewards since 2022/04/18</div>
+          <div>Staking rewards since {firstStakingTime}</div>
         </RewardsFinishedTime>
       </MyAccountCardWrapper>
 
