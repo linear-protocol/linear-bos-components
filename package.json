@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
-    "start:testnet": "open https://test.near.org/linear-builder.testnet/widget/LiNEAR",
+    "start:testnet": "LINEAR_BOS_URL=https://test.near.org/linear-builder.testnet/widget/LiNEAR && open $LINEAR_BOS_URL && echo \"Preview at: $LINEAR_BOS_URL\"",
     "dev": "yarn start:testnet && bos-loader linear-builder.testnet --path src"
   },
   "repository": {
