@@ -105,6 +105,7 @@ const {
   nearBalance,
   linearBalance,
   account,
+  finishedTime,
 } = props;
 if (!config) {
   return "Component not be loaded. Missing `config` props";
@@ -201,9 +202,10 @@ return (
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div>
                 <TokenValue>
-                  <div>Unstake is Ready</div>
-                  {/* <div>14.55128</div>
-            <NearIcon /> */}
+                  {!finishedTime.durationHours && <div>Unstake is Ready</div>}
+                  {finishedTime.durationHours && (
+                    <div>~${finishedTime.durationHours} hours</div>
+                  )}
                 </TokenValue>
                 <GrayContent>Remaining</GrayContent>
               </div>
@@ -214,6 +216,7 @@ return (
                     onClick: () => {
                       // onClick withdraw
                     },
+                    disabled: !!finishedTime.durationHours,
                     text: "Withdraw",
                     size: "base",
                     full: "full",
@@ -221,24 +224,21 @@ return (
                 />
               </div>
             </div>
+            {finishedTime.durationHours && (
+              <>
+                <HorizontalLine />
+                <div>
+                  <div>
+                    <TokenValue>
+                      <div>{finishedTime.finishedTime}</div>
+                    </TokenValue>
+                    <GrayContent>Withdrawal will be available</GrayContent>
+                  </div>
+                </div>
+              </>
+            )}
           </MyAccountCardGroupWrapper>
         )}
-      <div style={{ marginTop: "16px" }}>
-        <Widget
-          src={`${config.ownerId}/widget/LiNEAR.Button`}
-          props={{
-            onClick: () => {
-              Near.call(config.contractId, "ft_transfer", {
-                receiver_id: accountId,
-                amount: "0",
-                memo: "Add LiNEAR to NEAR Web Wallet",
-              });
-            },
-            text: "Add LiNEAR to NEAR Web Wallet",
-            padding: "large",
-          }}
-        />
-      </div>
     </MyAccountContent>
   </Main>
 );
