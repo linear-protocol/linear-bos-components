@@ -298,13 +298,9 @@ function getNearBalance(accountId, onInvalidate) {
       },
     }),
   };
-  if (onInvalidate) {
-    asyncFetch(config.nodeUrl, options).then((account) =>
-      updateNearBalance(account, onInvalidate)
-    );
-  } else {
-    updateNearBalance(fetch(config.nodeUrl, options));
-  }
+  asyncFetch(config.nodeUrl, options).then((account) =>
+    updateNearBalance(account, onInvalidate)
+  );
 }
 
 function getLinearBalance(accountId, subscribe) {
