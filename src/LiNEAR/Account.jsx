@@ -110,8 +110,20 @@ if (!config) {
   return "Component not be loaded. Missing `config` props";
 }
 
+State.init({
+  data: {},
+});
+
+function onLoad(data) {
+  State.update({ data });
+}
+
 return (
   <Main>
+    <Widget
+      src={`${config.ownerId}/widget/LiNEAR.Data`}
+      props={{ config, onLoad }}
+    />
     <Widget src={`${config.ownerId}/widget/LiNEAR.Navigation`} />
     <MyAccountTitle>My Account</MyAccountTitle>
     <MyAccountContent>
