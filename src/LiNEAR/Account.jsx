@@ -1,5 +1,6 @@
 const ONE_MICRO_NEAR = "1000000000000000000";
 const YOCTONEAR = "1000000000000000000000000";
+const NEAR_DECIMALS = 24;
 const MyAccountTitle = styled.h1`
   font-size: 40px;
   font-weight: bold;
@@ -118,6 +119,34 @@ function onLoad(data) {
   State.update({ data });
 }
 
+function isValid(a) {
+  if (!a) return false;
+  if (isNaN(Number(a))) return false;
+  if (a === "") return false;
+  return true;
+}
+
+function formatAmount(a) {
+  return isValid(a)
+    ? Number(a).toLocaleString(undefined, {
+        minimumFractionDigits: 5,
+        maximumFractionDigits: 5,
+      })
+    : a;
+}
+
+const data = state.data;
+const stakingRewards =
+  data && data.stakingRewards
+    ? formatAmount(
+        Big(data.stakingRewards).div(Big(10).pow(NEAR_DECIMALS)).toFixed(5)
+      )
+    : "-";
+const firstStakingTime =
+  data && data.firstStakingTime
+    ? new Date(data.firstStakingTime).toISOString().slice(0, 10)
+    : "-";
+
 return (
   <Main>
     <Widget
@@ -178,7 +207,7 @@ return (
         <div>
           <GrayContent>Staking Rewards</GrayContent>
           <TokenValue>
-            <div>9.79920</div>
+            <div>{stakingRewards}</div>
             <NearIcon />
           </TokenValue>
         </div>
@@ -190,7 +219,7 @@ return (
                 "Staking rewards are included in the LiNEAR price. LiNEAR price increases every epoch (12~15 hours).",
             }}
           />
-          <div>Staking rewards since 2022/04/18</div>
+          <div>Staking rewards since {firstStakingTime}</div>
         </RewardsFinishedTime>
       </MyAccountCardWrapper>
 
