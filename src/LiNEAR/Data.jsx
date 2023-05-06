@@ -66,7 +66,7 @@ function getStakingRewards(accountId, excludingFees) {
   if (!data) {
     return undefined;
   }
-  let user = data.users[0];
+  const user = data.users[0];
   // If the user has no relevant operations before, return 0
   if (!user) {
     return undefined;
@@ -98,7 +98,6 @@ function getStakingRewards(accountId, excludingFees) {
   const netTransfer = transferIn.minus(transferOut);
 
   const currentLinear = Big(mintedLinear).minus(unstakedLinear);
-
   const rewards = currentLinear
     .mul(linearPrice)
     .minus(stakedNear)
