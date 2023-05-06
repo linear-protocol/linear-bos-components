@@ -144,7 +144,10 @@ const stakingRewards =
     : "-";
 const firstStakingTime =
   data && data.firstStakingTime
-    ? new Date(data.firstStakingTime).toISOString().slice(0, 10)
+    ? new Date(data.firstStakingTime)
+        .toISOString()
+        .slice(0, 10)
+        .replace(/-/g, "/")
     : "-";
 
 return (
