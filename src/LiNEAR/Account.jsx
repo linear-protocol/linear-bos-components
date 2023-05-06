@@ -214,7 +214,7 @@ return (
                   src={`${config.ownerId}/widget/LiNEAR.Button`}
                   props={{
                     onClick: () => {
-                      // onClick withdraw
+                      Near.call(config.contractId, "withdraw_all", {});
                     },
                     disabled: !!finishedTime.durationHours,
                     text: "Withdraw",
