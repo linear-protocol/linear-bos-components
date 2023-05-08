@@ -374,6 +374,9 @@ if (state.page === "stake") {
             config,
             linearBalance,
             updateAccountInfo,
+            updatePage,
+            account,
+            finishedTime,
           }}
         />
       )}
