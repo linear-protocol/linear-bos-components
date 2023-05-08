@@ -41,7 +41,7 @@ State.init({
   tabName: "stake", // stake | unstake
   page: "stake", // "stake" | "account"
   nearBalance: "",
-  unstake: {},
+  unstakeInfo: {},
 });
 
 const Main = styled.div`
@@ -150,7 +150,7 @@ function updateAccountInfo(callback) {
 }
 
 function onLoad(data) {
-  State.update({ unstake: data });
+  State.update({ unstakeInfo: data });
 }
 
 const body =
@@ -194,7 +194,7 @@ const body =
         config,
         nearBalance,
         linearBalance,
-        unstakeInfo: state.unstake,
+        unstakeInfo: state.unstakeInfo,
       }}
     />
   );
