@@ -158,7 +158,7 @@ const stakingRewards = data.stakingRewards
   : "-";
 const firstStakingTime = data.firstStakingTime
   ? formatDate(data.firstStakingTime)
-  : "-";
+  : undefined;
 
 return (
   <Main>
@@ -216,25 +216,28 @@ return (
           />
         </div>
       </MyAccountCardWrapper>
-      <MyAccountCardWrapper style={{ marginTop: "10px" }}>
-        <div>
-          <GrayContent>Staking Rewards</GrayContent>
-          <TokenValue>
-            <div>{stakingRewards}</div>
-            <NearIcon />
-          </TokenValue>
-        </div>
-        <RewardsFinishedTime>
-          <Widget
-            src={`${config.ownerId}/widget/LiNEAR.Tooltip`}
-            props={{
-              message:
-                "Staking rewards are included in the LiNEAR price. LiNEAR price increases every epoch (12~15 hours).",
-            }}
-          />
-          <div>Staking rewards since {firstStakingTime}</div>
-        </RewardsFinishedTime>
-      </MyAccountCardWrapper>
+
+      {firstStakingTime && (
+        <MyAccountCardWrapper style={{ marginTop: "10px" }}>
+          <div>
+            <GrayContent>Staking Rewards</GrayContent>
+            <TokenValue>
+              <div>{stakingRewards}</div>
+              <NearIcon />
+            </TokenValue>
+          </div>
+          <RewardsFinishedTime>
+            <Widget
+              src={`${config.ownerId}/widget/LiNEAR.Tooltip`}
+              props={{
+                message:
+                  "Staking rewards are included in the LiNEAR price. LiNEAR price increases every epoch (12~15 hours).",
+              }}
+            />
+            <div>Staking rewards since {firstStakingTime}</div>
+          </RewardsFinishedTime>
+        </MyAccountCardWrapper>
+      )}
 
       {account &&
         account.unstaked_balance &&
