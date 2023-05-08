@@ -179,8 +179,7 @@ const body =
             linearBalance,
             updateAccountInfo,
             updatePage,
-            account,
-            finishedTime,
+            unstakeInfo: state.unstakeInfo,
           }}
         />
       )}

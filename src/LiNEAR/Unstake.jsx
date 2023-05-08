@@ -14,7 +14,7 @@ State.init({
 /** state init end */
 
 // load config
-const config = props.config;
+const { config, unstakeInfo, updatePage, updateAccountInfo } = props;
 if (!config) {
   return "Component not be loaded. Missing `config` props";
 }
@@ -233,8 +233,8 @@ const onClickUnstake = async () => {
   }
 
   // update account balances
-  if (props.updateAccountInfo) {
-    props.updateAccountInfo();
+  if (updateAccountInfo) {
+    updateAccountInfo();
   }
 };
 
@@ -457,18 +457,17 @@ return (
               });
             }
           } else {
-            const { account, finishedTime } = props;
+            const { amount, canWithdraw, endTime } = unstakeInfo || {};
             if (
-              account &&
-              account.unstaked_balance &&
-              Big(account.unstaked_balance).gte(ONE_MICRO_NEAR) &&
-              !finishedTime.duration_hours &&
-              account.can_withdraw
+              amount &&
+              canWithdraw &&
+              Big(amount).gte(ONE_MICRO_NEAR) &&
+              !endTime.duration_hours
             ) {
               State.update({ showGoToWithdraw: true });
-              return;
+            } else {
+              State.update({ showConfirmDelayedUnstake: true });
             }
-            State.update({ showConfirmDelayedUnstake: true });
           }
         },
         disabled: disabledStakeButton,
@@ -539,7 +538,7 @@ return (
             State.update({
               showGoToWithdraw: false,
             });
-            props.updatePage("account");
+            updatePage("account");
           },
         }}
       />

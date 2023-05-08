@@ -6,7 +6,7 @@ State.init({
 /** state init end */
 
 // load config
-const config = props.config;
+const { config, updateAccountInfo } = props.config;
 if (!config) {
   return "Component not be loaded. Missing `config` props";
 }
@@ -153,8 +153,8 @@ const onClickStake = async () => {
   Near.call(txs);
 
   // update account balances
-  if (props.updateAccountInfo) {
-    props.updateAccountInfo();
+  if (updateAccountInfo) {
+    updateAccountInfo();
   }
 };
 /** events end */
