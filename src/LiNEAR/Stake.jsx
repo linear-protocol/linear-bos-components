@@ -6,7 +6,7 @@ State.init({
 /** state init end */
 
 // load config
-const { config, updateAccountInfo } = props.config;
+const { config, updateAccountInfo } = props;
 if (!config) {
   return "Component not be loaded. Missing `config` props";
 }

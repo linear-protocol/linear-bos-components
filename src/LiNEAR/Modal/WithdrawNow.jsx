@@ -56,7 +56,7 @@ const RightIcon = () => (
 // load config
 const config = props.config;
 if (!config) {
-  return "Component not be loaded. Missing `config` props";
+  return "Component cannot be loaded. Missing `config` props";
 }
 
 return (
