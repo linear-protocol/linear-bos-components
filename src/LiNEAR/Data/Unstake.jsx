@@ -174,7 +174,7 @@ if (onLoad) {
       ? queryFinishedTime(accountDetails.unstaked_available_epoch_height)
       : {};
 
-  if (accountDetails || endTime) {
+  if (accountDetails) {
     onLoad({
       amount: accountDetails.unstaked_balance,
       canWithdraw: accountDetails.can_withdraw,
