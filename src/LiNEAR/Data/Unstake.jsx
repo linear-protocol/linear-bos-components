@@ -166,17 +166,18 @@ function queryFinishedTime(epochHeight) {
 }
 
 if (onLoad) {
-  const details = Near.view(config.contractId, "get_account_details", {
+  const accountDetails = Near.view(config.contractId, "get_account_details", {
     account_id: accountId,
   });
   const endTime =
-    details && details.unstaked_available_epoch_height
-      ? queryFinishedTime(details.unstaked_available_epoch_height)
+    accountDetails && accountDetails.unstaked_available_epoch_height
+      ? queryFinishedTime(accountDetails.unstaked_available_epoch_height)
       : {};
 
-  if (details || endTime) {
+  if (accountDetails || endTime) {
     onLoad({
-      amount: details.unstaked_balance,
+      amount: accountDetails.unstaked_balance,
+      canWithdraw: accountDetails.can_withdraw,
       endTime,
     });
   }
