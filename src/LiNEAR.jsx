@@ -132,7 +132,7 @@ function getAccountDetails(accountId, subscribe) {
   );
 }
 
-const nearBalance = state.nearBalance;
+const nearBalance = accountId ? state.nearBalance : "-";
 // Initial fetch of account NEAR balance
 if (accountId && !isValid(nearBalance)) {
   getNearBalance(accountId);
