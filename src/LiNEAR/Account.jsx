@@ -1,3 +1,4 @@
+const accountId = props.accountId || context.accountId;
 const ONE_MICRO_NEAR = "1000000000000000000";
 const YOCTONEAR = "1000000000000000000000000";
 const NEAR_DECIMALS = 24;
@@ -157,7 +158,7 @@ function formatDateTime(timestamp) {
   return formatDate(timestamp) + " " + time;
 }
 
-const data = state.data || {};
+const data = (accountId && state.data) || {};
 const stakingRewards = data.stakingRewards
   ? formatAmount(
       Math.max(
