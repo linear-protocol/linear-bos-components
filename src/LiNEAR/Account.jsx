@@ -171,7 +171,12 @@ return (
       src={`${config.ownerId}/widget/LiNEAR.Data`}
       props={{ config, onLoad }}
     />
-    <Widget src={`${config.ownerId}/widget/LiNEAR.Navigation`} />
+    <Widget
+      src={`${config.ownerId}/widget/LiNEAR.Navigation`}
+      props={{
+        updatePage,
+      }}
+    />
     <MyAccountTitle>My Account</MyAccountTitle>
     <MyAccountContent>
       <MyAccountCardWrapper>
