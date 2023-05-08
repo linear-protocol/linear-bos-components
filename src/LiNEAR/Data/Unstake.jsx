@@ -83,7 +83,11 @@ function estimateUnstakeEndTime(endEpochHeight) {
   const validators = getValidators();
   const currentEpochHeight = validators.epoch_height;
 
-  if (currentEpochHeight >= endEpochHeight) return {};
+  if (currentEpochHeight >= endEpochHeight) {
+    return {
+      ready: true,
+    };
+  }
 
   const { hoursTillEpochEnd, lastEpochLengthHours } = getEpochInfo();
   const EXTRA_HOURS = 3;
@@ -92,13 +96,14 @@ function estimateUnstakeEndTime(endEpochHeight) {
     hoursTillEpochEnd +
     EXTRA_HOURS;
 
-  if (remainingHours) {
+  if (remainingHours && remainingHours > 0) {
     return {
+      ready: false,
       timestamp: Date.now() + remainingHours * HOUR_MS,
       remainingHours: Math.floor(remainingHours).toString(),
     };
   } else {
-    return {};
+    return null;
   }
 }
 

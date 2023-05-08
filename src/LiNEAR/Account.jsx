@@ -273,8 +273,8 @@ return (
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div>
                 <TokenValue>
-                  {!endTime.remainingHours && <div>Unstake is Ready</div>}
-                  {endTime.remainingHours && (
+                  {endTime.ready && <div>Unstake is Ready</div>}
+                  {!endTime.ready && endTime.remainingHours && (
                     <div>~{endTime.remainingHours} hours</div>
                   )}
                 </TokenValue>
@@ -287,7 +287,7 @@ return (
                     onClick: () => {
                       Near.call(config.contractId, "withdraw_all", {});
                     },
-                    disabled: !!endTime.remainingHours,
+                    disabled: !endTime.ready,
                     text: "Withdraw",
                     size: "base",
                     full: "full",
@@ -295,7 +295,7 @@ return (
                 />
               </div>
             </div>
-            {endTime.remainingHours && endTime.timestamp && (
+            {endTime.timestamp && (
               <>
                 <HorizontalLine />
                 <div>
