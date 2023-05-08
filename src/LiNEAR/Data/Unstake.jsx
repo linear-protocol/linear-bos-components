@@ -1,6 +1,6 @@
 const accountId = props.accountId || context.accountId;
 
-const { config, onLoad } = props;
+const { config, accountDetails, onLoad } = props;
 if (!config) {
   return "Component cannot be loaded. Missing `config` props";
 }
@@ -108,9 +108,6 @@ function estimateUnstakeEndTime(endEpochHeight) {
 }
 
 if (onLoad) {
-  const accountDetails = Near.view(config.contractId, "get_account_details", {
-    account_id: accountId,
-  });
   const endTime =
     accountDetails && accountDetails.unstaked_available_epoch_height
       ? estimateUnstakeEndTime(accountDetails.unstaked_available_epoch_height)

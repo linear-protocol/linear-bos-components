@@ -106,7 +106,7 @@ const onClickMax = () => {
   }
 };
 
-const onClickStake = async () => {
+const onClickStake = () => {
   const stakeAmount = state.inputValue;
   if (
     nearBalance &&

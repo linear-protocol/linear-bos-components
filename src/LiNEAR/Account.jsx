@@ -102,12 +102,13 @@ const HorizontalLine = () => (
 );
 
 const {
-  updatePage,
-  updateTabName,
   config,
   nearBalance,
   linearBalance,
   unstakeInfo,
+  updatePage,
+  updateTabName,
+  updateAccountInfo,
 } = props;
 if (!config) {
   return "Component cannot be loaded. Missing `config` props";
@@ -175,6 +176,15 @@ const formattedLinearBalance =
     : Big(linearBalance).toFixed(5, BIG_ROUND_DOWN);
 
 const endTime = unstakeInfo.endTime || {};
+
+const onClickWithdraw = () => {
+  Near.call(config.contractId, "withdraw_all", {});
+
+  // update account balances
+  if (updateAccountInfo) {
+    updateAccountInfo();
+  }
+};
 
 return (
   <Main>
@@ -284,9 +294,7 @@ return (
                 <Widget
                   src={`${config.ownerId}/widget/LiNEAR.Button`}
                   props={{
-                    onClick: () => {
-                      Near.call(config.contractId, "withdraw_all", {});
-                    },
+                    onClick: onClickWithdraw,
                     disabled: !endTime.ready,
                     text: "Withdraw",
                     size: "base",
