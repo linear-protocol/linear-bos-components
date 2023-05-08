@@ -6,6 +6,9 @@ const subgraphApiUrl =
     : "https://api.thegraph.com/subgraphs/name/linear-protocol/linear-testnet";
 
 const { config, onLoad } = props;
+if (!config) {
+  return "Component cannot be loaded. Missing `config` props";
+}
 
 function getLinearPrice() {
   return Big(Near.view(config.contractId, "ft_price", "{}") ?? "0").div(
