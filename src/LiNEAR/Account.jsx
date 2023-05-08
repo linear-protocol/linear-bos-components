@@ -107,11 +107,10 @@ const {
   config,
   nearBalance,
   linearBalance,
-  account,
-  finishedTime,
+  unstakeInfo,
 } = props;
 if (!config) {
-  return "Component not be loaded. Missing `config` props";
+  return "Component cannot be loaded. Missing `config` props";
 }
 
 State.init({
@@ -165,17 +164,13 @@ const formattedLinearBalance =
     ? "-"
     : Big(linearBalance).toFixed(5, BIG_ROUND_DOWN);
 
+const finishedTime = unstakeInfo.endTime || {};
+
 return (
   <Main>
     <Widget
-      src={`${config.ownerId}/widget/LiNEAR.Data`}
+      src={`${config.ownerId}/widget/LiNEAR.Data.Stake`}
       props={{ config, onLoad }}
-    />
-    <Widget
-      src={`${config.ownerId}/widget/LiNEAR.Navigation`}
-      props={{
-        updatePage,
-      }}
     />
     <MyAccountTitle>My Account</MyAccountTitle>
     <MyAccountContent>
@@ -249,15 +244,15 @@ return (
         </MyAccountCardWrapper>
       )}
 
-      {account &&
-        account.unstaked_balance &&
-        Big(account.unstaked_balance).gte(ONE_MICRO_NEAR) && (
+      {unstakeInfo &&
+        unstakeInfo.amount &&
+        Big(unstakeInfo.amount).gte(ONE_MICRO_NEAR) && (
           <MyAccountCardGroupWrapper style={{ marginTop: "10px" }}>
             <div>
               <TokenValue>
                 <div>
-                  {account.unstaked_balance
-                    ? Big(account.unstaked_balance).div(YOCTONEAR).toFixed(5)
+                  {unstakeInfo.amount
+                    ? Big(unstakeInfo.amount).div(YOCTONEAR).toFixed(5)
                     : "-"}
                 </div>
                 <NearIcon />
