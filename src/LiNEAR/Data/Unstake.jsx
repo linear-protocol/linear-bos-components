@@ -8,153 +8,93 @@ if (!config) {
 // one hour in ms
 const HOUR_MS = 60 * 60 * 1000;
 
-function isValid(a) {
-  if (!a) return false;
-  if (isNaN(Number(a))) return false;
-  if (a === "") return false;
-  return true;
+function nsToMs(ns) {
+  return Math.round((ns ?? 0) / 1e6);
+}
+
+function callNearRpc(method, params) {
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: "dontcare",
+      method,
+      params,
+    }),
+  };
+  return fetch(config.nodeUrl, options).body.result;
 }
 
 function getValidators() {
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      id: "dontcare",
-      method: "validators",
-      params: [null],
-    }),
-  };
-  return fetch(config.nodeUrl, options).body.result;
+  return callNearRpc("validators", [null]);
 }
 
 function getBlock(blockId) {
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      id: "dontcare",
-      method: "block",
-      params: !!blockId
-        ? {
-            block_id: blockId,
-          }
-        : {
-            finality: "final",
-          },
-    }),
-  };
-  return fetch(config.nodeUrl, options).body.result;
-}
-
-function latestBlock() {
-  const lastBlock = getBlock();
-  const startBlock = getBlock(lastBlock.header.next_epoch_id);
-  const prevBlock = getBlock(lastBlock.header.epoch_id);
-  const startBlockHeight = startBlock.header.height;
-  let prevBlockTimestamp = Math.round((prevBlock.header.timestamp ?? 0) / 1e6);
-  let startBlockTimestamp = Math.round(
-    (startBlock.header.timestamp ?? 0) / 1e6
+  return callNearRpc(
+    "block",
+    !!blockId
+      ? {
+          block_id: blockId,
+        }
+      : {
+          finality: "final",
+        }
   );
-  let lastBlockTimestamp = Math.round((lastBlock.header.timestamp ?? 0) / 1e6);
+}
 
-  if (startBlockTimestamp < new Date().getTime() - 48 * HOUR_MS) {
-    //genesis or hard-fork
-    startBlockTimestamp = new Date().getTime() - 6 * HOUR_MS;
-  }
-  if (prevBlockTimestamp < new Date().getTime() - 48 * HOUR_MS) {
-    //genesis or hard-fork
-    prevBlockTimestamp = new Date().getTime() - 12 * HOUR_MS;
-  }
+function getEpochInfo() {
+  const now = new Date().getTime();
+  const latestBlock = getBlock();
+  const latestBlockTimestamp = nsToMs(latestBlock.header.timestamp);
+  const latestBlockHeight = latestBlock.header.height;
 
-  //const noPrevBloc = startBlock.header.height == prevBlock.header.height;
-  let length = startBlock.header.height - prevBlock.header.height,
-    duration_ms = 0,
-    advance;
-  let start_dtm, ends_dtm, duration_till_now_ms;
-  if (length === 0) {
-    //!prevBlock, genesis or hard-fork
-    length = 43200;
-    duration_ms = 12 * HOUR_MS;
-    //estimated start & prev timestamps
-    advance =
-      Math.round(
-        Number(
-          ((BigInt(lastBlock.header.height) - BigInt(this.start_block_height)) *
-            BigInt(1000000)) /
-            BigInt(this.length)
-        )
-      ) / 1000000;
-    startBlockTimestamp = lastBlockTimestamp - duration_ms * advance;
-    prevBlockTimestamp = startBlockTimestamp - duration_ms;
-  } else {
-    duration_ms = startBlockTimestamp - prevBlockTimestamp;
+  // last epoch
+  const epochEndBlock = getBlock(latestBlock.header.next_epoch_id);
+  const epochStartBlock = getBlock(latestBlock.header.epoch_id);
+  const epochEndBlockHeight = epochEndBlock.header.height;
+  const epochStartBlockHeight = epochStartBlockHeight;
+
+  let epochStartTimestamp = nsToMs(epochStartBlock.header.timestamp);
+  let epochEndTimestamp = nsToMs(epochEndBlock.header.timestamp);
+
+  let epochBlockNum = epochEndBlockHeight - epochStartBlockHeight;
+  let epochLengthMs = epochEndTimestamp - epochStartTimestamp;
+  if (epochBlockNum === 0) {
+    epochBlockNum = 43200;
+    epochLengthMs = 14 * HOUR_MS;
+    const scale = Big(latestBlockHeight)
+      .sub(epochEndBlockHeight)
+      .div(epochBlockNum)
+      .toNumber();
+    epochEndTimestamp = latestBlockTimestamp - epochLengthMs * scale;
+    epochStartTimestamp = epochEndTimestamp - epochLengthMs;
   }
 
-  start_dtm = new Date(startBlockTimestamp);
-  ends_dtm = new Date(startBlockTimestamp + duration_ms);
-  duration_till_now_ms = lastBlockTimestamp - startBlockTimestamp;
-
-  // update function
-  if (isValid(lastBlock.header.height) && isValid(startBlockHeight)) {
-    advance =
-      Math.round(
-        Big(lastBlock.header.height)
-          .minus(startBlockHeight)
-          .times(1000000)
-          .div(length)
-          .toNumber()
-      ) / 1000000;
-    if (advance > 0.1) {
-      ends_dtm = new Date(
-        startBlockTimestamp +
-          duration_till_now_ms +
-          duration_till_now_ms * (1 - advance)
-      );
-    }
-  }
   return {
-    lastEpochDurationHours: duration_ms / HOUR_MS,
-    hoursToEnd:
-      Math.round(
-        ((startBlockTimestamp + duration_ms - new Date().getTime()) / HOUR_MS) *
-          100
-      ) / 100,
+    lastEpochLengthHours: epochLengthMs / HOUR_MS,
+    hoursTillEpochEnd: (epochEndTimestamp + epochLengthMs - now) / HOUR_MS,
   };
 }
 
-function padNumber(n) {
-  if (n < 10) return `0${n}`;
-  return n.toString();
-}
+function estimateUnstakeEndTime(endEpochHeight) {
+  const validators = getValidators();
+  const currentEpochHeight = validators.epoch_height;
 
-function getUnstakeEndTime(epochHeight) {
-  const nowValidator = getValidators();
-  let currentEpochHeight = nowValidator.epoch_height;
+  if (currentEpochHeight >= endEpochHeight) return {};
 
-  if (currentEpochHeight >= epochHeight) return {};
-
-  const { hoursToEnd, lastEpochDurationHours } = latestBlock();
-  const BUFFER = 3; // 3 HOURs buffer
+  const { hoursTillEpochEnd, lastEpochLengthHours } = getEpochInfo();
+  const EXTRA_HOURS = 3;
   const remainingHours =
-    hoursToEnd +
-    (epochHeight - currentEpochHeight - 1) * lastEpochDurationHours +
-    BUFFER;
+    (endEpochHeight - currentEpochHeight - 1) * lastEpochLengthHours +
+    hoursTillEpochEnd +
+    EXTRA_HOURS;
 
   if (remainingHours) {
-    const endTime = new Date(new Date().getTime() + remainingHours * HOUR_MS);
     return {
-      time: `${endTime.getFullYear()}/${padNumber(
-        endTime.getMonth() + 1
-      )}/${padNumber(endTime.getDate())} ${padNumber(
-        endTime.getHours()
-      )}:${padNumber(endTime.getMinutes())}:${padNumber(endTime.getSeconds())}`,
+      timestamp: Date.now() + remainingHours * HOUR_MS,
       remainingHours: Math.floor(remainingHours).toString(),
     };
   } else {
@@ -168,7 +108,7 @@ if (onLoad) {
   });
   const endTime =
     accountDetails && accountDetails.unstaked_available_epoch_height
-      ? getUnstakeEndTime(accountDetails.unstaked_available_epoch_height)
+      ? estimateUnstakeEndTime(accountDetails.unstaked_available_epoch_height)
       : {};
 
   if (accountDetails) {

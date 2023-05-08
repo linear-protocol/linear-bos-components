@@ -146,6 +146,16 @@ function formatDate(timestamp) {
   ].join("/");
 }
 
+function formatDateTime(timestamp) {
+  const d = new Date(timestamp);
+  const time = [
+    ("0" + d.getHours()).slice(-2),
+    ("0" + d.getMinutes()).slice(-2),
+    ("0" + d.getSeconds()).slice(-2),
+  ].join(":");
+  return formatDate(timestamp) + " " + time;
+}
+
 const data = state.data || {};
 const stakingRewards = data.stakingRewards
   ? formatAmount(
@@ -265,7 +275,7 @@ return (
                 <TokenValue>
                   {!endTime.remainingHours && <div>Unstake is Ready</div>}
                   {endTime.remainingHours && (
-                    <div>~${endTime.remainingHours} hours</div>
+                    <div>~{endTime.remainingHours} hours</div>
                   )}
                 </TokenValue>
                 <GrayContent>Remaining</GrayContent>
@@ -285,13 +295,13 @@ return (
                 />
               </div>
             </div>
-            {endTime.remainingHours && (
+            {endTime.remainingHours && endTime.timestamp && (
               <>
                 <HorizontalLine />
                 <div>
                   <div>
                     <TokenValue>
-                      <div>{endTime.time}</div>
+                      <div>{formatDateTime(endTime.timestamp)}</div>
                     </TokenValue>
                     <GrayContent>Withdrawal will be available</GrayContent>
                   </div>
