@@ -44,7 +44,8 @@ function formatAmount(a) {
 
 /** common lib end */
 const linearBalance = props.linearBalance || "-";
-const formattedLinearBalance = props.formattedLinearBalance || "-";
+const formattedLinearBalance =
+  linearBalance === "-" ? "-" : Big(linearBalance).toFixed(5, BIG_ROUND_DOWN);
 
 const linearPrice = Big(
   Near.view(config.contractId, "ft_price", `{}`) ?? "0"

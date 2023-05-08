@@ -160,6 +160,11 @@ const firstStakingTime = data.firstStakingTime
   ? formatDate(data.firstStakingTime)
   : undefined;
 
+const formattedLinearBalance =
+  !linearBalance || linearBalance === "-"
+    ? "-"
+    : Big(linearBalance).toFixed(5, BIG_ROUND_DOWN);
+
 return (
   <Main>
     <Widget
@@ -196,7 +201,7 @@ return (
       <MyAccountCardWrapper style={{ marginTop: "10px" }}>
         <div>
           <TokenValue>
-            <div>{linearBalance}</div>
+            <div>{formattedLinearBalance}</div>
             <LiNEARIcon />
           </TokenValue>
           <GrayContent>Your LiNEAR Tokens</GrayContent>

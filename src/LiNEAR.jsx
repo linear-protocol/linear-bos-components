@@ -324,8 +324,6 @@ if (accountId && !isValid(nearBalance)) {
   getNearBalance(accountId);
 }
 const linearBalance = accountId ? getLinearBalance(accountId) : "-";
-const formattedLinearBalance =
-  linearBalance === "-" ? "-" : Big(linearBalance).toFixed(5, BIG_ROUND_DOWN);
 
 function updateAccountInfo(callback) {
   const interval = setInterval(() => {
@@ -375,7 +373,6 @@ if (state.page === "stake") {
           props={{
             config,
             linearBalance,
-            formattedLinearBalance,
             updateAccountInfo,
           }}
         />
@@ -392,7 +389,7 @@ if (state.page === "stake") {
         config,
         nearBalance,
         account,
-        linearBalance: formattedLinearBalance,
+        linearBalance,
         finishedTime,
       }}
     />
