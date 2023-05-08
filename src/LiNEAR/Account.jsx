@@ -164,7 +164,7 @@ const formattedLinearBalance =
     ? "-"
     : Big(linearBalance).toFixed(5, BIG_ROUND_DOWN);
 
-const finishedTime = unstakeInfo.endTime || {};
+const endTime = unstakeInfo.endTime || {};
 
 return (
   <Main>
@@ -263,9 +263,9 @@ return (
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div>
                 <TokenValue>
-                  {!finishedTime.durationHours && <div>Unstake is Ready</div>}
-                  {finishedTime.durationHours && (
-                    <div>~${finishedTime.durationHours} hours</div>
+                  {!endTime.remainingHours && <div>Unstake is Ready</div>}
+                  {endTime.remainingHours && (
+                    <div>~${endTime.remainingHours} hours</div>
                   )}
                 </TokenValue>
                 <GrayContent>Remaining</GrayContent>
@@ -277,7 +277,7 @@ return (
                     onClick: () => {
                       Near.call(config.contractId, "withdraw_all", {});
                     },
-                    disabled: !!finishedTime.durationHours,
+                    disabled: !!endTime.remainingHours,
                     text: "Withdraw",
                     size: "base",
                     full: "full",
@@ -285,13 +285,13 @@ return (
                 />
               </div>
             </div>
-            {finishedTime.durationHours && (
+            {endTime.remainingHours && (
               <>
                 <HorizontalLine />
                 <div>
                   <div>
                     <TokenValue>
-                      <div>{finishedTime.finishedTime}</div>
+                      <div>{endTime.time}</div>
                     </TokenValue>
                     <GrayContent>Withdrawal will be available</GrayContent>
                   </div>

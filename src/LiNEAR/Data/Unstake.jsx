@@ -5,10 +5,8 @@ if (!config) {
   return "Component cannot be loaded. Missing `config` props";
 }
 
-//time in ms
-const SECONDS = 1000;
-const MINUTES = 60 * SECONDS;
-const HOURS = 60 * MINUTES;
+// one hour in ms
+const HOUR_MS = 60 * 60 * 1000;
 
 function isValid(a) {
   if (!a) return false;
@@ -59,20 +57,20 @@ function latestBlock() {
   const lastBlock = getBlock();
   const startBlock = getBlock(lastBlock.header.next_epoch_id);
   const prevBlock = getBlock(lastBlock.header.epoch_id);
-  let prev_timestamp = Math.round((prevBlock.header.timestamp ?? 0) / 1e6);
-  let start_block_height = startBlock.header.height;
-  let start_timestamp = Math.round((startBlock.header.timestamp ?? 0) / 1e6);
-  let last_block_timestamp = Math.round(
-    (lastBlock.header.timestamp ?? 0) / 1e6
+  const startBlockHeight = startBlock.header.height;
+  let prevBlockTimestamp = Math.round((prevBlock.header.timestamp ?? 0) / 1e6);
+  let startBlockTimestamp = Math.round(
+    (startBlock.header.timestamp ?? 0) / 1e6
   );
+  let lastBlockTimestamp = Math.round((lastBlock.header.timestamp ?? 0) / 1e6);
 
-  if (start_timestamp < new Date().getTime() - 48 * HOURS) {
+  if (startBlockTimestamp < new Date().getTime() - 48 * HOUR_MS) {
     //genesis or hard-fork
-    start_timestamp = new Date().getTime() - 6 * HOURS;
+    startBlockTimestamp = new Date().getTime() - 6 * HOUR_MS;
   }
-  if (prev_timestamp < new Date().getTime() - 48 * HOURS) {
+  if (prevBlockTimestamp < new Date().getTime() - 48 * HOUR_MS) {
     //genesis or hard-fork
-    prev_timestamp = new Date().getTime() - 12 * HOURS;
+    prevBlockTimestamp = new Date().getTime() - 12 * HOUR_MS;
   }
 
   //const noPrevBloc = startBlock.header.height == prevBlock.header.height;
@@ -83,7 +81,7 @@ function latestBlock() {
   if (length === 0) {
     //!prevBlock, genesis or hard-fork
     length = 43200;
-    duration_ms = 12 * HOURS;
+    duration_ms = 12 * HOUR_MS;
     //estimated start & prev timestamps
     advance =
       Math.round(
@@ -93,39 +91,40 @@ function latestBlock() {
             BigInt(this.length)
         )
       ) / 1000000;
-    start_timestamp = last_block_timestamp - duration_ms * advance;
-    prev_timestamp = start_timestamp - duration_ms;
+    startBlockTimestamp = lastBlockTimestamp - duration_ms * advance;
+    prevBlockTimestamp = startBlockTimestamp - duration_ms;
   } else {
-    duration_ms = start_timestamp - prev_timestamp;
+    duration_ms = startBlockTimestamp - prevBlockTimestamp;
   }
 
-  start_dtm = new Date(start_timestamp);
-  ends_dtm = new Date(start_timestamp + duration_ms);
-  duration_till_now_ms = last_block_timestamp - start_timestamp;
+  start_dtm = new Date(startBlockTimestamp);
+  ends_dtm = new Date(startBlockTimestamp + duration_ms);
+  duration_till_now_ms = lastBlockTimestamp - startBlockTimestamp;
 
   // update function
-  if (isValid(lastBlock.header.height) && isValid(start_block_height)) {
+  if (isValid(lastBlock.header.height) && isValid(startBlockHeight)) {
     advance =
       Math.round(
         Big(lastBlock.header.height)
-          .minus(start_block_height)
+          .minus(startBlockHeight)
           .times(1000000)
           .div(length)
           .toNumber()
       ) / 1000000;
     if (advance > 0.1) {
       ends_dtm = new Date(
-        start_timestamp +
+        startBlockTimestamp +
           duration_till_now_ms +
           duration_till_now_ms * (1 - advance)
       );
     }
   }
   return {
-    lastEpochDurationHours: duration_ms / HOURS,
+    lastEpochDurationHours: duration_ms / HOUR_MS,
     hoursToEnd:
       Math.round(
-        ((start_timestamp + duration_ms - new Date().getTime()) / HOURS) * 100
+        ((startBlockTimestamp + duration_ms - new Date().getTime()) / HOUR_MS) *
+          100
       ) / 100,
   };
 }
@@ -135,30 +134,28 @@ function padNumber(n) {
   return n.toString();
 }
 
-function queryFinishedTime(epochHeight) {
+function getUnstakeEndTime(epochHeight) {
   const nowValidator = getValidators();
-  let nowEpochHeight = nowValidator.epoch_height;
+  let currentEpochHeight = nowValidator.epoch_height;
 
-  if (nowEpochHeight >= epochHeight) return {};
+  if (currentEpochHeight >= epochHeight) return {};
 
   const { hoursToEnd, lastEpochDurationHours } = latestBlock();
   const BUFFER = 3; // 3 HOURs buffer
-  const durationHours =
+  const remainingHours =
     hoursToEnd +
-    (epochHeight - nowEpochHeight - 1) * lastEpochDurationHours +
+    (epochHeight - currentEpochHeight - 1) * lastEpochDurationHours +
     BUFFER;
 
-  if (durationHours) {
-    const finishedTime = new Date(new Date().getTime() + durationHours * HOURS);
+  if (remainingHours) {
+    const endTime = new Date(new Date().getTime() + remainingHours * HOUR_MS);
     return {
-      finishedTime: `${finishedTime.getFullYear()}/${padNumber(
-        finishedTime.getMonth() + 1
-      )}/${padNumber(finishedTime.getDate())} ${padNumber(
-        finishedTime.getHours()
-      )}:${padNumber(finishedTime.getMinutes())}:${padNumber(
-        finishedTime.getSeconds()
-      )}`,
-      durationHours: Math.floor(durationHours).toString(),
+      time: `${endTime.getFullYear()}/${padNumber(
+        endTime.getMonth() + 1
+      )}/${padNumber(endTime.getDate())} ${padNumber(
+        endTime.getHours()
+      )}:${padNumber(endTime.getMinutes())}:${padNumber(endTime.getSeconds())}`,
+      remainingHours: Math.floor(remainingHours).toString(),
     };
   } else {
     return {};
@@ -171,7 +168,7 @@ if (onLoad) {
   });
   const endTime =
     accountDetails && accountDetails.unstaked_available_epoch_height
-      ? queryFinishedTime(accountDetails.unstaked_available_epoch_height)
+      ? getUnstakeEndTime(accountDetails.unstaked_available_epoch_height)
       : {};
 
   if (accountDetails) {
