@@ -110,7 +110,6 @@ if (
     .gt(UNSTAKE_DIFF_ERROR_RATIO)
 ) {
   State.update({
-    ...state,
     inputError: IMPACT_TOO_HIGH_ERROR,
   });
 } else if (
@@ -123,7 +122,6 @@ if (
         .lte(UNSTAKE_DIFF_ERROR_RATIO)))
 ) {
   State.update({
-    ...state,
     inputError: "",
   });
 }
@@ -162,7 +160,6 @@ const onChange = (e) => {
       Big(unstakeAmount).lt(nearPriceInLiNEAR)
     ) {
       State.update({
-        ...state,
         unstakeMax: false,
         onClickMax: false,
         inputValue: unstakeAmount,
@@ -170,7 +167,6 @@ const onChange = (e) => {
       });
     } else {
       State.update({
-        ...state,
         unstakeMax: false,
         onClickMax: false,
         inputValue: unstakeAmount,
@@ -180,7 +176,6 @@ const onChange = (e) => {
     return;
   }
   State.update({
-    ...state,
     unstakeMax: false,
     inputValue: unstakeAmount,
     inputError: "",
@@ -194,7 +189,6 @@ const onClickMax = () => {
     Big(linearBalance).lt(nearPriceInLiNEAR)
   ) {
     State.update({
-      ...state,
       unstakeMax: true,
       inputValue: formattedLinearBalance,
       inputError: `Stake at least ${nearPriceInLiNEAR} NEAR`,
@@ -202,7 +196,6 @@ const onClickMax = () => {
     return;
   } else {
     State.update({
-      ...state,
       unstakeMax: true,
       inputValue: formattedLinearBalance,
       inputError: "",
@@ -226,7 +219,7 @@ const onClickUnstake = async () => {
       SLIPPAGE_TOLERANCE
     );
     // hide confirm modal
-    State.update({ ...state, showConfirmInstantUnstake: false });
+    State.update({ showConfirmInstantUnstake: false });
   } else {
     if (unstakeMax) {
       Near.call(config.contractId, "unstake_all", {});
@@ -236,7 +229,7 @@ const onClickUnstake = async () => {
       });
     }
     // hide confirm modal
-    State.update({ ...state, showConfirmDelayedUnstake: false });
+    State.update({ showConfirmDelayedUnstake: false });
   }
 
   // update account balances
@@ -472,10 +465,10 @@ return (
               !finishedTime.duration_hours &&
               account.can_withdraw
             ) {
-              State.update({ ...state, showGoToWithdraw: true });
+              State.update({ showGoToWithdraw: true });
               return;
             }
-            State.update({ ...state, showConfirmDelayedUnstake: true });
+            State.update({ showConfirmDelayedUnstake: true });
           }
         },
         disabled: disabledStakeButton,
@@ -485,7 +478,7 @@ return (
     <UnstakeTabWrapper>
       <UnstakeTab
         select={state.unstakeType === "instant"}
-        onClick={() => State.update({ ...state, unstakeType: "instant" })}
+        onClick={() => State.update({ unstakeType: "instant" })}
       >
         <UnstakeTabTitle>
           <p>INSTANT UNSTAKE</p>
@@ -504,7 +497,7 @@ return (
       </UnstakeTab>
       <UnstakeTab
         select={state.unstakeType === "delayed"}
-        onClick={() => State.update({ ...state, unstakeType: "delayed" })}
+        onClick={() => State.update({ unstakeType: "delayed" })}
       >
         <UnstakeTabTitle>DELAYED UNSTAKE ~2 DAYS</UnstakeTabTitle>
         <EstimateGetValue>
@@ -521,7 +514,7 @@ return (
           youWillReceive: formattedReceivedInstantUnstakeNear,
           onClickConfirm: onClickUnstake,
           onClickCancel: () =>
-            State.update({ ...state, showConfirmInstantUnstake: false }),
+            State.update({ showConfirmInstantUnstake: false }),
         }}
       />
     )}
@@ -533,7 +526,7 @@ return (
           youWillReceive: formattedReceivedDelayedUnstakeNear,
           onClickConfirm: onClickUnstake,
           onClickCancel: () =>
-            State.update({ ...state, showConfirmDelayedUnstake: false }),
+            State.update({ showConfirmDelayedUnstake: false }),
         }}
       />
     )}
@@ -544,7 +537,6 @@ return (
           config,
           onClickWithdraw: () => {
             State.update({
-              ...state,
               showGoToWithdraw: false,
             });
             props.updatePage("account");
