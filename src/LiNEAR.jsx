@@ -178,6 +178,9 @@ const body =
             config,
             linearBalance,
             updateAccountInfo,
+            updatePage,
+            account,
+            finishedTime,
           }}
         />
       )}
