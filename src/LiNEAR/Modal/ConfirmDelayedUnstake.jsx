@@ -92,14 +92,14 @@ return (
       </ReciveContent>
       <ButtonGroup>
         <Widget
-          src={`${config.ownerId}/widget/LiNEAR.Button`}
+          src={`${config.ownerId}/widget/LiNEAR.Element.Button`}
           props={{
             onClick: props.onClickConfirm,
             text: "Confirm",
           }}
         />
         <Widget
-          src={`${config.ownerId}/widget/LiNEAR.Button`}
+          src={`${config.ownerId}/widget/LiNEAR.Element.Button`}
           props={{
             onClick: props.onClickCancel,
             text: "Cancel",

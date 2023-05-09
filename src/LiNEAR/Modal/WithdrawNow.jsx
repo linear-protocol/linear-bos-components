@@ -68,7 +68,7 @@ return (
         first
       </TipMessage>
       <Widget
-        src={`${config.ownerId}/widget/LiNEAR.Button`}
+        src={`${config.ownerId}/widget/LiNEAR.Element.Button`}
         props={{
           onClick: props.onClickWithdraw,
           text: "Withdraw Now",

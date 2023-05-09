@@ -181,10 +181,12 @@ function onLoad(data) {
 const body =
   state.page === "stake" ? (
     <Main>
-      <Widget src={`${config.ownerId}/widget/LiNEAR.TitleAndDescription`} />
-      <Widget src={`${config.ownerId}/widget/LiNEAR.Apy`} />
       <Widget
-        src={`${config.ownerId}/widget/LiNEAR.Tab`}
+        src={`${config.ownerId}/widget/LiNEAR.Element.TitleAndDescription`}
+      />
+      <Widget src={`${config.ownerId}/widget/LiNEAR.Data.Apy`} />
+      <Widget
+        src={`${config.ownerId}/widget/LiNEAR.Layout.Tab`}
         props={{
           tabName: state.tabName,
           updateTabName,
@@ -231,7 +233,7 @@ return (
       props={{ config, accountDetails, onLoad }}
     />
     <Widget
-      src={`${config.ownerId}/widget/LiNEAR.Navigation`}
+      src={`${config.ownerId}/widget/LiNEAR.Layout.Navigation`}
       props={{
         updatePage,
       }}
