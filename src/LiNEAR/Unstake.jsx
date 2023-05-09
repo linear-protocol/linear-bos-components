@@ -428,7 +428,7 @@ return (
       />
     </div>
     <Widget
-      src={`${config.ownerId}/widget/LiNEAR.Input`}
+      src={`${config.ownerId}/widget/LiNEAR.Element.Input`}
       props={{
         placeholder: "LiNEAR amount to unstake",
         value: state.inputValue,
@@ -442,7 +442,7 @@ return (
       }}
     />
     <Widget
-      src={`${config.ownerId}/widget/LiNEAR.Button`}
+      src={`${config.ownerId}/widget/LiNEAR.Element.Button`}
       props={{
         onClick: () => {
           if (state.unstakeType === "instant") {
@@ -484,7 +484,7 @@ return (
         <UnstakeTabTitle>
           <p>INSTANT UNSTAKE</p>
           <Widget
-            src={`${config.ownerId}/widget/LiNEAR.Tooltip`}
+            src={`${config.ownerId}/widget/LiNEAR.Element.Tooltip`}
             props={{
               message:
                 "The slippage and fee of instant unstake is based on the LiNEAR/wNEAR StableSwap pool on Ref",

@@ -1,0 +1,15 @@
+{
+  "description": "LiNEAR Stake Data. You can query staking rewards and the time of user's first staking to LiNEAR with the `onLoad()` function.",
+  "image": {
+    "ipfs_cid": "bafkreici2aqxke5ogocdqlhlfqxygwicwynmyaa4b4jqiioqpltj25fhfu"
+  },
+  "name": "Stake Data | LiNEAR",
+  "tags": {
+    "defi": "",
+    "linear": "",
+    "widget": "",
+    "component": "",
+    "data": "",
+    "stake": ""
+  }
+}

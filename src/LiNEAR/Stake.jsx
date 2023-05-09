@@ -184,7 +184,7 @@ const StakeFormWrapper = styled.div`
 return (
   <StakeFormWrapper>
     <Widget
-      src={`${config.ownerId}/widget/LiNEAR.Input`}
+      src={`${config.ownerId}/widget/LiNEAR.Element.Input`}
       props={{
         placeholder: "NEAR amount to stake",
         value: state.inputValue,
@@ -198,7 +198,7 @@ return (
       }}
     />
     <Widget
-      src={`${config.ownerId}/widget/LiNEAR.Button`}
+      src={`${config.ownerId}/widget/LiNEAR.Element.Button`}
       props={{
         onClick: onClickStake,
         disabled: disabledStakeButton,

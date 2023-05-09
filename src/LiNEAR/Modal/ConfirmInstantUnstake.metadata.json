@@ -1,14 +1,14 @@
 {
-  "description": "Confirm Delayed Unstake",
+  "description": "Confirm Instant Unstake",
   "image": {
     "ipfs_cid": "bafkreihszlp5bu7xe3pwn4x3xmhazcxjxo4d5gsnhr2a4kthnzn6fzhn5i"
   },
-  "name": "Confirm Delayed Unstake | LiNEAR",
+  "name": "Modal (Confirm Instant Unstake) | LiNEAR",
   "tags": {
     "defi": "",
     "linear": "",
     "widget": "",
     "component": "",
-    "data": ""
+    "modal": ""
   }
 }

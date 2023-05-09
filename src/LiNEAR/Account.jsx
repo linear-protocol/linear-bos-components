@@ -205,7 +205,7 @@ return (
         </div>
         <div style={{ width: "130px" }}>
           <Widget
-            src={`${config.ownerId}/widget/LiNEAR.Button`}
+            src={`${config.ownerId}/widget/LiNEAR.Element.Button`}
             props={{
               onClick: () => {
                 updatePage("stake");
@@ -229,7 +229,7 @@ return (
         </div>
         <div style={{ width: "130px" }}>
           <Widget
-            src={`${config.ownerId}/widget/LiNEAR.Button`}
+            src={`${config.ownerId}/widget/LiNEAR.Element.Button`}
             props={{
               onClick: () => {
                 updatePage("stake");
@@ -254,7 +254,7 @@ return (
           </div>
           <RewardsFinishedTime>
             <Widget
-              src={`${config.ownerId}/widget/LiNEAR.Tooltip`}
+              src={`${config.ownerId}/widget/LiNEAR.Element.Tooltip`}
               props={{
                 message:
                   "Staking rewards are included in the LiNEAR price. LiNEAR price increases every epoch (12~15 hours).",
@@ -293,7 +293,7 @@ return (
               </div>
               <div style={{ width: "130px" }}>
                 <Widget
-                  src={`${config.ownerId}/widget/LiNEAR.Button`}
+                  src={`${config.ownerId}/widget/LiNEAR.Element.Button`}
                   props={{
                     onClick: onClickWithdraw,
                     disabled: !endTime.ready,

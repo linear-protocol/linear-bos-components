@@ -1,13 +1,15 @@
 {
-  "description": "LiNEAR Navigation",
+  "description": "LiNEAR Mainnet APY",
   "image": {
     "ipfs_cid": "bafkreihszlp5bu7xe3pwn4x3xmhazcxjxo4d5gsnhr2a4kthnzn6fzhn5i"
   },
-  "name": "Navigation | LiNEAR",
+  "name": "APY | LiNEAR",
   "tags": {
+    "defi": "",
     "linear": "",
     "widget": "",
     "component": "",
-    "input": ""
+    "data": "",
+    "apy": ""
   }
 }

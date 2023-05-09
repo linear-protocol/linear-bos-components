@@ -1,14 +1,14 @@
 {
-  "description": "LiNEAR Tooltip",
+  "description": "Withdraw Now",
   "image": {
     "ipfs_cid": "bafkreihszlp5bu7xe3pwn4x3xmhazcxjxo4d5gsnhr2a4kthnzn6fzhn5i"
   },
-  "name": "Tooltip | LiNEAR",
+  "name": "Modal (Withdraw Now) | LiNEAR",
   "tags": {
+    "defi": "",
     "linear": "",
     "widget": "",
     "component": "",
-    "title": "",
-    "description": ""
+    "modal": ""
   }
 }
