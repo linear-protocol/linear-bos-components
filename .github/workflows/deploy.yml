@@ -7,6 +7,10 @@ on:
         description: "Version of BOS CLI to use for deploy (e.g. 0.3.0)"
         type: string
         default: "0.3.0"
+      network:
+        required: true
+        description: "NEAR network the components should be deployed to (e.g. mainnet, testnet)"
+        type: string
       deploy-account-address:
         required: true
         description: "Account under which component code should be deployed"
