@@ -235,7 +235,7 @@ const onClickUnstake = async () => {
   // update account balances
   if (updateAccountInfo) {
     updateAccountInfo({
-      notNEAR: unstakeType === "delayed",
+      notUpdateNearBalance: unstakeType === "delayed",
     });
   }
 };

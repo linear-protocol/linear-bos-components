@@ -140,7 +140,7 @@ if (accountId && !isValid(nearBalance)) {
 const linearBalance = accountId ? getLinearBalance(accountId) : "-";
 const accountDetails = accountId ? getAccountDetails(accountId) : "-";
 
-function updateAccountInfo({ notNEAR, callback }) {
+function updateAccountInfo({ notUpdateNearBalance, callback }) {
   const interval1 = setInterval(() => {
     const data = getAccountDetails(accountId, true);
     if (
@@ -151,12 +151,14 @@ function updateAccountInfo({ notNEAR, callback }) {
       clearInterval(interval1);
       // update NEAR and LiNEAR balances
       getLinearBalance(accountId, true);
-      getNearBalance(accountId);
+      if (notUpdateNearBalance) {
+        getNearBalance(accountId);
+      }
       // invoke callback functions if any
       if (callback) callback();
     }
   }, 500);
-  if (!notNEAR) {
+  if (!notUpdateNearBalance) {
     const interval2 = setInterval(() => {
       getNearBalance(accountId, (oldBalance, newBalance) => {
         if (
@@ -164,7 +166,7 @@ function updateAccountInfo({ notNEAR, callback }) {
           oldBalance !== "-" &&
           Big(newBalance).sub(oldBalance).abs().gt(MIN_BALANCE_CHANGE)
         ) {
-          // stop polling and invoke callback functions if any
+          // stop polling
           clearInterval(interval2);
         }
       });
