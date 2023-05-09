@@ -6,6 +6,7 @@ State.init({
   unstakeType: "instant", // instant | delayed
   showConfirmInstantUnstake: false,
   showConfirmDelayedUnstake: false,
+  showGoToWithdraw: false,
   swapEstimate: {},
   swapAmountIn: "",
   swapAmountOut: "",
@@ -13,7 +14,7 @@ State.init({
 /** state init end */
 
 // load config
-const config = props.config;
+const { config, unstakeInfo, updatePage, updateAccountInfo } = props;
 if (!config) {
   return "Component not be loaded. Missing `config` props";
 }
@@ -21,6 +22,7 @@ if (!config) {
 /** common lib start */
 const accountId = props.accountId || context.accountId;
 const isSignedIn = !!accountId;
+const ONE_MICRO_NEAR = "1000000000000000000";
 const NEAR_DECIMALS = 24;
 const LiNEAR_DECIMALS = 24;
 const SLIPPAGE_TOLERANCE = 0.05;
@@ -231,8 +233,10 @@ const onClickUnstake = async () => {
   }
 
   // update account balances
-  if (props.updateAccountInfo) {
-    props.updateAccountInfo();
+  if (updateAccountInfo) {
+    updateAccountInfo({
+      notUpdateNearBalance: unstakeType === "delayed",
+    });
   }
 };
 
@@ -455,7 +459,17 @@ return (
               });
             }
           } else {
-            State.update({ showConfirmDelayedUnstake: true });
+            const { amount, canWithdraw, endTime } = unstakeInfo || {};
+            if (
+              amount &&
+              canWithdraw &&
+              Big(amount).gte(ONE_MICRO_NEAR) &&
+              !endTime.duration_hours
+            ) {
+              State.update({ showGoToWithdraw: true });
+            } else {
+              State.update({ showConfirmDelayedUnstake: true });
+            }
           }
         },
         disabled: disabledStakeButton,
@@ -514,6 +528,20 @@ return (
           onClickConfirm: onClickUnstake,
           onClickCancel: () =>
             State.update({ showConfirmDelayedUnstake: false }),
+        }}
+      />
+    )}
+    {state.showGoToWithdraw && (
+      <Widget
+        src={`${config.ownerId}/widget/LiNEAR.Modal.WithdrawNow`}
+        props={{
+          config,
+          onClickWithdraw: () => {
+            State.update({
+              showGoToWithdraw: false,
+            });
+            updatePage("account");
+          },
         }}
       />
     )}

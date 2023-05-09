@@ -13,7 +13,7 @@ const MenuItemWrapper = styled.div`
 const MenuItem = styled.div`
   font-size: 12px;
   font-weight: bold;
-  margin-left: 8px;
+  margin-left: 20px;
   transition: all 0.3s ease-in-out;
   &:hover {
     opacity: 0.3;
@@ -38,11 +38,11 @@ const BrandLogo = () => (
 return (
   <NavigationWrapper>
     <BrandLogo />
-    {/*<MenuItemWrapper>
+    <MenuItemWrapper>
       <MenuItem onClick={() => props.updatePage("stake")}>Stake</MenuItem>
       <MenuItem onClick={() => props.updatePage("account")}>
         My Account
       </MenuItem>
-    </MenuItemWrapper>*/}
+    </MenuItemWrapper>
   </NavigationWrapper>
 );
