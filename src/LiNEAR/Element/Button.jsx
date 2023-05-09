@@ -1,3 +1,5 @@
+// MIT License: https://github.com/linear-protocol/linear-bos-components/blob/main/LICENSE
+
 const type = props.type || "primary"; // primary || outline
 const size = props.size || "lg"; // lg || base
 const full = props.full || "full"; // full || none

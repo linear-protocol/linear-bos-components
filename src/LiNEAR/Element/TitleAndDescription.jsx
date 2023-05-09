@@ -1,3 +1,5 @@
+// MIT License: https://github.com/linear-protocol/linear-bos-components/blob/main/LICENSE
+
 const Title = styled.h1`
   font-size: 40px;
   font-weight: bold;

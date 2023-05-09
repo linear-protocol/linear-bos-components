@@ -1,3 +1,5 @@
+// MIT License: https://github.com/linear-protocol/linear-bos-components/blob/main/LICENSE
+
 function getAPY() {
   const result = fetch("https://metrics.linearprotocol.org", {
     method: "GET",

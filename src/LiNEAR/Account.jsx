@@ -1,3 +1,5 @@
+// MIT License: https://github.com/linear-protocol/linear-bos-components/blob/main/LICENSE
+
 const accountId = props.accountId || context.accountId;
 const ONE_MICRO_NEAR = "1000000000000000000";
 const YOCTONEAR = "1000000000000000000000000";

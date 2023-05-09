@@ -1,3 +1,5 @@
+// MIT License: https://github.com/linear-protocol/linear-bos-components/blob/main/LICENSE
+
 const InputWrapper = styled.div`
   width: 100%;
   border-radius: 10px;
