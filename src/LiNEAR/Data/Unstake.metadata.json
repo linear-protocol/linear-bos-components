@@ -1,5 +1,5 @@
 {
-  "description": "LiNEAR Unstake Data",
+  "description": "LiNEAR Unstake Data. You can query unstake information including delayed unstake end time with the `onLoad()` function.",
   "image": {
     "ipfs_cid": "bafkreici2aqxke5ogocdqlhlfqxygwicwynmyaa4b4jqiioqpltj25fhfu"
   },
