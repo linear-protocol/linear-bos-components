@@ -83,7 +83,7 @@ return (
     <ModalContent>
       <ModalTitle>Start Delayed Unstake</ModalTitle>
       <ModalSubTitle>
-        Funds will be available in approximately 49 hours. You will not receive
+        Funds will be available in approximately 57 hours. You will not receive
         rewards during that period.
       </ModalSubTitle>
       <ReciveContent>
