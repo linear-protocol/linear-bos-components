@@ -1,4 +1,4 @@
-name: Deploy Components to Testnet
+name: Deploy Components
 on:
   workflow_call:
     inputs:
@@ -7,6 +7,10 @@ on:
         description: "Version of BOS CLI to use for deploy (e.g. 0.3.0)"
         type: string
         default: "0.3.0"
+      network:
+        required: true
+        description: "NEAR network the components should be deployed to (e.g. mainnet, testnet)"
+        type: string
       deploy-account-address:
         required: true
         description: "Account under which component code should be deployed"
@@ -26,8 +30,9 @@ on:
 jobs:
   deploy-components:
     runs-on: ubuntu-latest
-    name: Deploy to testnet
+    name: Deploy to ${{ inputs.network }}
     env:
+      NETWORK: ${{ inputs.network }}
       BOS_DEPLOY_ACCOUNT_ID: ${{ inputs.deploy-account-address }}
       BOS_SIGNER_ACCOUNT_ID: ${{ inputs.signer-account-address }}
       BOS_SIGNER_PUBLIC_KEY: ${{ inputs.signer-public-key }}
@@ -43,4 +48,4 @@ jobs:
 
       - name: Deploy components
         run: |
-          bos components deploy "$BOS_DEPLOY_ACCOUNT_ID" sign-as "$BOS_SIGNER_ACCOUNT_ID" network-config testnet sign-with-plaintext-private-key --signer-public-key "$BOS_SIGNER_PUBLIC_KEY" --signer-private-key "$BOS_SIGNER_PRIVATE_KEY" send
+          bos components deploy "$BOS_DEPLOY_ACCOUNT_ID" sign-as "$BOS_SIGNER_ACCOUNT_ID" network-config $NETWORK sign-with-plaintext-private-key --signer-public-key "$BOS_SIGNER_PUBLIC_KEY" --signer-private-key "$BOS_SIGNER_PRIVATE_KEY" send

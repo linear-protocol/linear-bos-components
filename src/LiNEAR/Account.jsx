@@ -2,7 +2,7 @@
 
 const accountId = props.accountId || context.accountId;
 const ONE_MICRO_NEAR = "1000000000000000000";
-const YOCTONEAR = "1000000000000000000000000";
+const YOCTO_NEAR = "1000000000000000000000000";
 const NEAR_DECIMALS = 24;
 const BIG_ROUND_DOWN = 0;
 
@@ -275,7 +275,7 @@ return (
               <TokenValue>
                 <div>
                   {unstakeInfo.amount
-                    ? Big(unstakeInfo.amount).div(YOCTONEAR).toFixed(5)
+                    ? Big(unstakeInfo.amount).div(YOCTO_NEAR).toFixed(5)
                     : "-"}
                 </div>
                 <NearIcon />
