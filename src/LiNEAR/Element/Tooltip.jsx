@@ -1,3 +1,5 @@
+// MIT License: https://github.com/linear-protocol/linear-bos-components/blob/main/LICENSE
+
 State.init({
   show: false,
 });

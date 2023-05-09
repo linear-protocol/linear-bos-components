@@ -1,3 +1,5 @@
+// MIT License: https://github.com/linear-protocol/linear-bos-components/blob/main/LICENSE
+
 const accountId = props.accountId || context.accountId;
 const LiNEAR_DECIMALS = 24;
 const subgraphApiUrl =

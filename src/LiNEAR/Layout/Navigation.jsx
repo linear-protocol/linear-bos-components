@@ -1,3 +1,5 @@
+// MIT License: https://github.com/linear-protocol/linear-bos-components/blob/main/LICENSE
+
 const NavigationWrapper = styled.div`
   width: 100%;
   display: flex;

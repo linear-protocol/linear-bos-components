@@ -1,3 +1,5 @@
+// MIT License: https://github.com/linear-protocol/linear-bos-components/blob/main/LICENSE
+
 const ModalWrapper = styled.div`
   position: absolute;
   z-index: 1000;
