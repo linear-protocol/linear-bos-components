@@ -8,7 +8,7 @@ State.init({
 // load config
 const { config, updateAccountInfo } = props;
 if (!config) {
-  return "Component not be loaded. Missing `config` props";
+  return "Component cannot be loaded. Missing `config` props";
 }
 
 /** common lib start */

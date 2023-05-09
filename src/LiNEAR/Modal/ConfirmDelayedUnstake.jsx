@@ -75,7 +75,7 @@ const Slippage = styled.div`
 // load config
 const config = props.config;
 if (!config) {
-  return "Component not be loaded. Missing `config` props";
+  return "Component cannot be loaded. Missing `config` props";
 }
 
 return (
@@ -83,7 +83,7 @@ return (
     <ModalContent>
       <ModalTitle>Start Delayed Unstake</ModalTitle>
       <ModalSubTitle>
-        Funds will be available in approximately 49 hours. You will not receive
+        Funds will be available in approximately 57 hours. You will not receive
         rewards during that period.
       </ModalSubTitle>
       <ReciveContent>
