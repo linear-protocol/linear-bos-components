@@ -4,8 +4,8 @@ const accountId = props.accountId || context.accountId;
 const LiNEAR_DECIMALS = 24;
 const subgraphApiUrl =
   context.networkId === "mainnet"
-    ? "https://api.thegraph.com/subgraphs/name/linear-protocol/linear"
-    : "https://api.thegraph.com/subgraphs/name/linear-protocol/linear-testnet";
+    ? "https://gateway-arbitrum.network.thegraph.com/api/70c104a4cbe006bc60a3701a27d959bf/subgraphs/id/H5F5XGL2pYCBY89Ycxzafq2RkLfqJvM47X533CwwPNjg"
+    : "https://api.studio.thegraph.com/query/76854/linear-testnet/version/latest";
 
 const { config, onLoad } = props;
 if (!config) {
