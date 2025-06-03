@@ -6,7 +6,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
     "start:testnet": "LINEAR_BOS_URL=https://test.near.org/linear-builder.testnet/widget/LiNEAR && open $LINEAR_BOS_URL && echo \"Preview at: $LINEAR_BOS_URL\"",
-    "dev": "yarn start:testnet && bos-loader linear-builder.testnet --path src"
+    "start:mainnet": "LINEAR_BOS_URL=https://dev.near.org/linearprotocol.near/widget/LiNEAR && open $LINEAR_BOS_URL && echo \"Preview at: $LINEAR_BOS_URL\"",
+    "dev": "yarn start:testnet && bos-loader linear-builder.testnet --path src",
+    "dev:mainnet": "yarn start:mainnet && bos-loader linearprotocol.near --path src"
   },
   "repository": {
     "type": "git",
